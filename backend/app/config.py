@@ -14,8 +14,17 @@ class Settings(BaseSettings):
     COURSE: str = "AIA331 - Ứng dụng trí tuệ nhân tạo"
     UNIVERSITY: str = "Đại học Thái Nguyên - Trường ĐH CNTT & TT (ICTU)"
     
-    # Database Settings: mssql (SQL Server) hoặc sqlite
-    DB_TYPE: str = os.getenv("DB_TYPE", "mssql")
+    # Database Settings: mysql, mssql (SQL Server) hoặc sqlite
+    DB_TYPE: str = os.getenv("DB_TYPE", "mysql")
+
+    # MySQL Settings
+    MYSQL_HOST: str = os.getenv("MYSQL_HOST", "localhost")
+    MYSQL_PORT: int = int(os.getenv("MYSQL_PORT", 3306))
+    MYSQL_USER: str = os.getenv("MYSQL_USER", "root")
+    MYSQL_PASSWORD: str = os.getenv("MYSQL_PASSWORD", "")
+    MYSQL_DATABASE: str = os.getenv("MYSQL_DATABASE", "petcare_db")
+
+    # SQL Server Settings
     SQLSERVER_SERVER: str = os.getenv("SQLSERVER_SERVER", r".\SQL2022")
     SQLSERVER_DATABASE: str = os.getenv("SQLSERVER_DATABASE", "petcare_db")
     SQLSERVER_DRIVER: str = os.getenv("SQLSERVER_DRIVER", "SQL Server")
@@ -38,8 +47,13 @@ class Settings(BaseSettings):
     def __init__(self, **values):
         super().__init__(**values)
         if not self.DATABASE_URL:
-            if self.DB_TYPE.lower() == "sqlite":
+            db_type = self.DB_TYPE.lower()
+            if db_type == "sqlite":
                 self.DATABASE_URL = f"sqlite:///{DB_PATH}"
+            elif db_type == "mysql":
+                quoted_pwd = urllib.parse.quote_plus(self.MYSQL_PASSWORD) if self.MYSQL_PASSWORD else ""
+                auth_part = f"{self.MYSQL_USER}:{quoted_pwd}@" if self.MYSQL_USER else ""
+                self.DATABASE_URL = f"mysql+pymysql://{auth_part}{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DATABASE}?charset=utf8mb4"
             else:
                 if self.SQLSERVER_USER and self.SQLSERVER_PASSWORD:
                     auth_part = f"UID={self.SQLSERVER_USER};PWD={self.SQLSERVER_PASSWORD};"

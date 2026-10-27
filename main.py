@@ -23,6 +23,11 @@ from app.api.ai_features import router as ai_router
 from app.api.customer_portal import router as customer_router
 from app.api.inventory import router as inventory_router
 
+try:
+    seed_database()
+except Exception:
+    pass
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:

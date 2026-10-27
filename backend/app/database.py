@@ -14,10 +14,32 @@ if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
 engine_kwargs = {}
 if "sqlite" in settings.DATABASE_URL:
     engine_kwargs["connect_args"] = {"check_same_thread": False}
-if "mssql" in settings.DATABASE_URL:
+elif "mssql" in settings.DATABASE_URL:
     engine_kwargs["use_setinputsizes"] = False
+elif "mysql" in settings.DATABASE_URL:
+    engine_kwargs["pool_recycle"] = 3600
+    engine_kwargs["pool_pre_ping"] = True
 
 engine = create_engine(settings.DATABASE_URL, **engine_kwargs)
+
+# Kiểm tra kết nối cơ sở dữ liệu và tự động dự phòng nếu máy chủ chưa bật
+if "sqlite" not in settings.DATABASE_URL:
+    try:
+        with engine.connect() as test_conn:
+            pass
+        if "mysql" in settings.DATABASE_URL:
+            print(f"[MySQL] Kết nối thành công tới máy chủ MySQL ({settings.MYSQL_HOST}:{settings.MYSQL_PORT}/{settings.MYSQL_DATABASE})")
+        elif "mssql" in settings.DATABASE_URL:
+            print(f"[SQL Server] Kết nối thành công tới SQL Server ({settings.SQLSERVER_SERVER}/{settings.SQLSERVER_DATABASE})")
+    except Exception as e:
+        if "mysql" in settings.DATABASE_URL:
+            print(f"[CẢNH BÁO DATABASE] Không thể kết nối tới MySQL tại {settings.MYSQL_HOST}:{settings.MYSQL_PORT} ({e}).")
+            print("[CẢNH BÁO DATABASE] Gợi ý: Hãy bật dịch vụ MySQL (qua XAMPP hoặc Windows Services), hoặc kiểm tra mật khẩu trong .env.")
+            print("[CẢNH BÁO DATABASE] Đang tự động chuyển sang chế độ dự phòng SQLite (petcare.db) để hệ thống hoạt động ổn định!")
+        else:
+            print(f"[CẢNH BÁO DATABASE] Không thể kết nối SQL Server ({e}). Chuyển sang SQLite.")
+        fallback_url = f"sqlite:///{settings.DB_PATH}"
+        engine = create_engine(fallback_url, connect_args={"check_same_thread": False})
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -27,6 +49,26 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def ensure_mysql_database():
+    """Tự động kiểm tra và tạo database trên MySQL nếu chưa tồn tại"""
+    if "mysql" in settings.DATABASE_URL:
+        try:
+            import pymysql
+            conn = pymysql.connect(
+                host=settings.MYSQL_HOST,
+                port=settings.MYSQL_PORT,
+                user=settings.MYSQL_USER,
+                password=settings.MYSQL_PASSWORD,
+                connect_timeout=5
+            )
+            cur = conn.cursor()
+            cur.execute(f"CREATE DATABASE IF NOT EXISTS `{settings.MYSQL_DATABASE}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
+            conn.commit()
+            conn.close()
+            print(f"[MySQL] Đã xác nhận cơ sở dữ liệu '{settings.MYSQL_DATABASE}' sẵn sàng.")
+        except Exception as e:
+            print(f"[MySQL] Lưu ý kiểm tra máy chủ MySQL: {e}")
 
 def ensure_sqlserver_database():
     """Tự động kiểm tra và tạo database trên SQL Server nếu chưa tồn tại"""
@@ -198,6 +240,7 @@ def migrate_from_sqlite(db: Session) -> bool:
         return False
 
 def init_db():
+    ensure_mysql_database()
     ensure_sqlserver_database()
     
     if "mssql" in settings.DATABASE_URL:
@@ -217,7 +260,7 @@ def init_db():
     try:
         user_count = db.query(User).count()
         if user_count == 0:
-            if "mssql" in settings.DATABASE_URL and settings.DB_PATH.exists():
+            if ("mssql" in settings.DATABASE_URL or "mysql" in settings.DATABASE_URL) and settings.DB_PATH.exists():
                 migrated = migrate_from_sqlite(db)
                 if not migrated:
                     seed_initial_data(db)
