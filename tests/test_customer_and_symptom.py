@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime, timedelta
 from fastapi.testclient import TestClient
 from main import app
-from app.services.ai_service import AIService
+from backend.services.ai_service import AIService
 
 client = TestClient(app)
 

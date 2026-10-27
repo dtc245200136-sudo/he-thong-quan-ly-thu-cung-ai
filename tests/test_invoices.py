@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from main import app
-from app.services.invoice_service import calculate_invoice_totals, generate_invoice_code
+from backend.services.invoice_service import calculate_invoice_totals, generate_invoice_code
 
 client = TestClient(app)
 

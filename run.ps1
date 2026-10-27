@@ -4,7 +4,7 @@ Write-Host "  Dai hoc Thai Nguyen - Truong DH CNTT & TT (ICTU)" -ForegroundColor
 Write-Host "  Hoc phan: AIA331 (Ma so: 80286)" -ForegroundColor Cyan
 Write-Host "========================================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "👉 Truy cap Web tai: http://127.0.0.1:8000" -ForegroundColor Green
-Write-Host "👉 Tai lieu API: http://127.0.0.1:8000/docs" -ForegroundColor Yellow
+Write-Host "👉 Truy cap Web tai: http://localhost:3000" -ForegroundColor Green
+Write-Host "👉 Tai lieu API: http://localhost:3000/docs" -ForegroundColor Yellow
 Write-Host ""
 python main.py
