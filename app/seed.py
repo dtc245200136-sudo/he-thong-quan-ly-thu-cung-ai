@@ -12,6 +12,7 @@ from app.models.vaccination import VaccinationSchedule, VaccinationStatus
 from app.models.invoice import Invoice, InvoiceItem, PaymentMethod, PaymentStatus
 
 def seed_database():
+<<<<<<< HEAD
     from app.core.config import settings
     if "mssql" in settings.DATABASE_URL:
         try:
@@ -24,6 +25,9 @@ def seed_database():
             Base.metadata.create_all(bind=engine, checkfirst=False)
     else:
         Base.metadata.create_all(bind=engine)
+=======
+    Base.metadata.create_all(bind=engine)
+>>>>>>> 7d091f82c59b4e25d52e991d59baa37a79cda502
     db = SessionLocal()
     
     # Kiểm tra nếu đã có dữ liệu users thì kiểm tra tiếp kho hàng
