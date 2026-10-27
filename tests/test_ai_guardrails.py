@@ -1,5 +1,5 @@
 import pytest
-from backend.services.ai_service import AIService, detect_emergency_symptoms, VETERINARY_DISCLAIMER
+from app.services.ai_service import AIService, detect_emergency_symptoms, VETERINARY_DISCLAIMER
 
 def test_detect_emergency_symptoms_positive():
     dangerous_inputs = [

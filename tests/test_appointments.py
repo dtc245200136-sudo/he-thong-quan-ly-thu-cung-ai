@@ -2,13 +2,13 @@ import pytest
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from backend.core.database import Base
-from backend.models.user import User, UserRole
-from backend.models.owner import PetOwner
-from backend.models.pet import Pet
-from backend.models.service import Service
-from backend.models.appointment import Appointment, AppointmentStatus
-from backend.services.appointment_service import check_appointment_conflict, calculate_end_time
+from app.core.database import Base
+from app.models.user import User, UserRole
+from app.models.owner import PetOwner
+from app.models.pet import Pet
+from app.models.service import Service
+from app.models.appointment import Appointment, AppointmentStatus
+from app.services.appointment_service import check_appointment_conflict, calculate_end_time
 
 # Dùng SQLite In-Memory cho Testing
 TEST_DATABASE_URL = "sqlite:///:memory:"

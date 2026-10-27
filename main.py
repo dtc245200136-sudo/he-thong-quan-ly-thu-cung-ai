@@ -5,23 +5,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from backend.core.config import settings
-from backend.core.database import Base, engine
-from backend.seed import seed_database
+from app.core.config import settings
+from app.core.database import Base, engine
+from app.seed import seed_database
 
 # Routers
-from backend.api.auth import router as auth_router
-from backend.api.owners import router as owners_router
-from backend.api.pets import router as pets_router
-from backend.api.services import router as services_router
-from backend.api.appointments import router as appointments_router
-from backend.api.care_records import router as care_records_router
-from backend.api.vaccinations import router as vaccinations_router
-from backend.api.invoices import router as invoices_router
-from backend.api.stats import router as stats_router
-from backend.api.ai_features import router as ai_router
-from backend.api.customer_portal import router as customer_router
-from backend.api.inventory import router as inventory_router
+from app.api.auth import router as auth_router
+from app.api.owners import router as owners_router
+from app.api.pets import router as pets_router
+from app.api.services import router as services_router
+from app.api.appointments import router as appointments_router
+from app.api.care_records import router as care_records_router
+from app.api.vaccinations import router as vaccinations_router
+from app.api.invoices import router as invoices_router
+from app.api.stats import router as stats_router
+from app.api.ai_features import router as ai_router
+from app.api.customer_portal import router as customer_router
+from app.api.inventory import router as inventory_router
 
 try:
     seed_database()

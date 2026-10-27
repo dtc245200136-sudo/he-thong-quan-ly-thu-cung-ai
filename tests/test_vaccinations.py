@@ -4,10 +4,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 
-from backend.core.database import Base
-from backend.models.owner import PetOwner
-from backend.models.pet import Pet
-from backend.models.vaccination import VaccinationSchedule, VaccinationStatus
+from app.core.database import Base
+from app.models.owner import PetOwner
+from app.models.pet import Pet
+from app.models.vaccination import VaccinationSchedule, VaccinationStatus
 from main import app
 
 TEST_DATABASE_URL = "sqlite:///:memory:"

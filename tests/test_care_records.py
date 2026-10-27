@@ -2,10 +2,10 @@ import pytest
 from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from backend.core.database import Base
-from backend.models.owner import PetOwner
-from backend.models.pet import Pet
-from backend.models.care_record import CareRecord
+from app.core.database import Base
+from app.models.owner import PetOwner
+from app.models.pet import Pet
+from app.models.care_record import CareRecord
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
 engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
