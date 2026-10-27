@@ -33,6 +33,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description=f"Học phần: {settings.COURSE} - Đề tài: {settings.PROJECT_CODE}\n{settings.UNIVERSITY}",

@@ -49,6 +49,7 @@ class AIChatResponse(BaseModel):
     is_emergency: bool = False
     emergency_level: str = "NONE" # "NONE", "MILD_ATTENTION", "CRITICAL_VET_REQUIRED"
     warning_badge: Optional[str] = None
+    emergency_hotline: Optional[str] = "0988.111.222"
     veterinary_disclaimer: str
     suggested_actions: List[str] = []
     generated_by: str

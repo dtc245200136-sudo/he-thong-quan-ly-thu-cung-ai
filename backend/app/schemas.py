@@ -283,6 +283,7 @@ class AIConsultationResponse(BaseModel):
     answer: str
     medical_disclaimer: str
     is_urgent_medical_alert: bool
+    emergency_hotline: Optional[str] = "0988.111.222"
     recommended_topics: List[str]
     model_used: str
 

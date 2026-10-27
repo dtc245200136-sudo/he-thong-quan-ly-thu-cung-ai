@@ -1573,9 +1573,70 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 .chat-bubble.emergency {
     align-self: flex-start;
     background: #fef2f2;
-    border: 1.5px solid #ef4444;
+    border: 2px solid #ef4444;
     color: #991b1b;
-    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.18);
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.45);
+    animation: urgentGlow 1s infinite alternate;
+}
+
+@keyframes urgentGlow {
+    from {
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    }
+    to {
+        box-shadow: 0 0 25px rgba(239, 68, 68, 0.85);
+    }
+}
+
+.emergency-triage-banner {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(185, 28, 28, 0.25) 100%);
+    border: 2px solid #ef4444;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+}
+
+.emergency-hotline-box {
+    background: #7f1d1d;
+    border: 1.5px solid #ef4444;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+    color: #ffffff;
+}
+
+.emergency-hotline-num {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+
+.emergency-call-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.5);
+    transition: all 0.2s ease;
+    border: 1px solid #fca5a5;
+}
+
+.emergency-call-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.7);
 }
 
 .chat-input-area {

@@ -726,6 +726,9 @@
 
                 <div class="portal-ai-suggestions">
                   <span class="sugg-header">Câu hỏi thường gặp từ chủ nuôi:</span>
+                  <button type="button" class="portal-ai-chip" style="background: #fef2f2; border: 1.5px solid #fca5a5; color: #b91c1c; font-weight: 700;" onclick="app.setPortalAiPrompt('thú cưng co giật, nôn ra máu')">
+                    🚨 Demo Cấp Cứu: thú cưng co giật, nôn ra máu
+                  </button>
                   <button type="button" class="portal-ai-chip" onclick="app.setPortalAiPrompt('Bé cún bị ngứa gãi nhiều và rụng lông là dấu hiệu bệnh gì và cần xử lý thế nào?')">
                     Bé cún ngứa gãi nhiều & rụng lông từng mảng?
                   </button>
@@ -1115,6 +1118,7 @@
                     Chào bạn! Mình là <strong>Trợ lý AI PetCare</strong><br>
                     Mình có thể giúp bạn giải đáp thắc mắc về tần suất tắm spa, dinh dưỡng hợp lý, chăm sóc lông da hay lịch tiêm phòng cho chó mèo. Bạn cần mình tư vấn điều gì hôm nay?
                     <div class="topic-pills">
+                      <span class="topic-pill" style="background: rgba(239, 68, 68, 0.18); border: 1.5px solid #ef4444; color: #ef4444; font-weight: 700;" onclick="app.sendAiConsultationMessage('thú cưng co giật, nôn ra máu')">🚨 Demo Cấp Cứu: thú cưng co giật, nôn ra máu</span>
                       <span class="topic-pill" onclick="app.sendAiConsultationMessage('Chó mèo nên tắm bao nhiêu lần một tuần?')">Tần suất tắm</span>
                       <span class="topic-pill" onclick="app.sendAiConsultationMessage('Cách chăm sóc lông cún đỡ bị rụng và rối?')">Giảm rụng lông</span>
                       <span class="topic-pill" onclick="app.sendAiConsultationMessage('Các loại thức ăn người tuyệt đối cấm cho chó mèo?')">Thức ăn cấm kỵ</span>

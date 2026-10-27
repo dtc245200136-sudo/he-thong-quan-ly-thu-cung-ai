@@ -339,20 +339,21 @@ class AIService:
         # If emergency detected, return immediate high-priority warning
         if is_emergency:
             emergency_answer = (
-                f"🚨 **CẢNH BÁO NGUY HIỂM KHẨN CẤP!**\n\n"
+                f"🚨 **CẢNH BÁO NGUY HIỂM KHẨN CẤP! (EMERGENCY TRIAGE - ƯU TIÊN CẤP 1)**\n\n"
                 f"Dựa trên các dấu hiệu bạn vừa mô tả trong câu hỏi (*'{question}'*), "
-                f"thú cưng có khả năng đang gặp tình trạng sức khỏe nghiêm trọng hoặc nguy cơ đe dọa tính mạng!\n\n"
-                f"👉 **HÀNH ĐỘNG CẦN THỰC HIỆN NGAY LẬP TỨC:**\n"
+                f"thú cưng có khả năng đang gặp tình trạng sức khỏe nguy kịch, đe dọa trực tiếp đến tính mạng!\n\n"
+                f"⚡ **HÀNH ĐỘNG CẦN THỰC HIỆN NGAY LẬP TỨC:**\n"
                 f"1. **ĐƯA BÉ ĐẾN PHÒNG KHÁM HOẶC BỆNH VIỆN THÚ Y GẦN NHẤT NGAY** để được bác sĩ cấp cứu chuyên khoa.\n"
                 f"2. KHÔNG tự ý cho bé uống thuốc hạ sốt của người (như Paracetamol/Panadol cực kỳ độc cho chó mèo).\n"
-                f"3. Giữ ấm và để bé nằm ở nơi thoáng đãng, yên tĩnh, tránh tiếng ồn mạnh trong lúc di chuyển.\n"
-                f"4. Liên hệ hotline cấp cứu thú y 24/7 tại khu vực của bạn."
+                f"3. Giữ ấm và để bé nằm nghiêng nơi thoáng đãng, yên tĩnh, giữ thẳng đường thở trong lúc di chuyển.\n"
+                f"4. 📞 **GỌI NGAY HOTLINE CẤP CỨU 24/7:** **0988.111.222** hoặc **0988.123.456** để bác sĩ chuẩn bị sẵn lồng ấp và thiết bị hồi sức trước khi bạn đưa bé đến!"
             )
             return {
                 "answer": emergency_answer,
                 "medical_disclaimer": PETCARE_MEDICAL_DISCLAIMER,
                 "is_urgent_medical_alert": True,
-                "recommended_topics": ["Cấp cứu thú y", "Địa chỉ phòng khám gần nhất", "Số hotline hỗ trợ"],
+                "emergency_hotline": "0988.111.222",
+                "recommended_topics": ["Hotline Cấp cứu 24/7", "Chỉ đường phòng khám gần nhất", "Kỹ năng sơ cứu trên xe"],
                 "model_used": "PetCare-Safety-Guardrail"
             }
 

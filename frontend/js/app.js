@@ -969,11 +969,30 @@ const app = {
       // Check if dangerous emergency
       let alertBanner = '';
       if (resp.is_urgent_medical_alert) {
+        const hotline = resp.emergency_hotline || '0988.111.222';
         alertBanner = `
-          <div class="ai-disclaimer-box urgent-alert" style="margin: 0 0 12px 0;">
-            
-            <div class="disclaimer-text">
-              <strong>BÁO ĐỘNG Y TẾ THÚ Y:</strong> Thú cưng có dấu hiệu khẩn cấp đe dọa sức khỏe. Vui lòng đưa bé đến bệnh viện thú y ngay!
+          <div class="emergency-triage-banner" style="margin: 0 0 14px 0;">
+            <div class="emergency-triage-header">
+              <div class="emergency-triage-title">
+                <span style="font-size: 1.3rem;">🚨</span>
+                <span>BÁO ĐỘNG ĐỎ: CA CẤP CỨU THÚ Y KHẨN CẤP (EMERGENCY TRIAGE)</span>
+              </div>
+              <span class="emergency-triage-badge">Ưu tiên cấp 1</span>
+            </div>
+            <div style="font-size: 0.84rem; color: #fee2e2; line-height: 1.5; margin-bottom: 8px;">
+              Hệ thống Guardrail AI phát hiện triệu chứng nguy kịch đe dọa trực tiếp đến tính mạng! <strong>Không tự ý điều trị tại nhà - Đưa bé đến bệnh viện ngay.</strong>
+            </div>
+            <div class="emergency-hotline-box">
+              <div class="emergency-hotline-info">
+                <span style="font-size: 1.5rem;">📞</span>
+                <div>
+                  <div style="font-size: 0.72rem; color: #fca5a5; font-weight: 700; text-transform: uppercase;">Hotline Cấp Cứu Thú Y Trực Tiếp 24/7:</div>
+                  <div class="emergency-hotline-num">${hotline}</div>
+                </div>
+              </div>
+              <a href="tel:${hotline.replace(/\./g, '')}" class="emergency-call-btn">
+                <span>GỌI BÁC SĨ CẤP CỨU NGAY</span>
+              </a>
             </div>
           </div>
         `;
@@ -1970,16 +1989,45 @@ const app = {
       const formattedAnswer = answerText.replace(/\n/g, '<br>');
 
       if (answerBox) {
+        let triageBanner = '';
+        if (res.is_urgent_medical_alert) {
+          const hotline = res.emergency_hotline || '0988.111.222';
+          triageBanner = `
+            <div class="emergency-triage-banner" style="margin-bottom: 12px;">
+              <div class="emergency-triage-header">
+                <div class="emergency-triage-title">
+                  <span style="font-size: 1.3rem;">🚨</span>
+                  <span>BÁO ĐỘNG ĐỎ: CA CẤP CỨU THÚ Y KHẨN CẤP</span>
+                </div>
+                <span class="emergency-triage-badge">Ưu Tiên Cấp 1</span>
+              </div>
+              <div class="emergency-hotline-box">
+                <div class="emergency-hotline-info">
+                  <span style="font-size: 1.4rem;">📞</span>
+                  <div>
+                    <div style="font-size: 0.72rem; color: #fca5a5; font-weight: 700;">HOTLINE BÁC SĨ TRỰC 24/7:</div>
+                    <div class="emergency-hotline-num">${hotline}</div>
+                  </div>
+                </div>
+                <a href="tel:${hotline.replace(/\./g, '')}" class="emergency-call-btn">
+                  <span>GỌI CẤP CỨU NGAY</span>
+                </a>
+              </div>
+            </div>
+          `;
+        }
         answerBox.innerHTML = `
+          ${triageBanner}
           <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px;">
-            
             <div style="flex: 1;">
-              <strong style="color: #0369a1; font-size: 0.95rem;">Cố Vấn Chăm Sóc Sức Khỏe Cho Bé:</strong>
+              <strong style="color: ${res.is_urgent_medical_alert ? '#b91c1c' : '#0369a1'}; font-size: 0.95rem;">
+                ${res.is_urgent_medical_alert ? '🚨 Báo Động Cấp Cứu Y Tế Khẩn Cấp:' : 'Cố Vấn Chăm Sóc Sức Khỏe Cho Bé:'}
+              </strong>
               <div style="margin-top: 6px; color: #0f172a; line-height: 1.6;">${formattedAnswer}</div>
             </div>
           </div>
           <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 0.78rem; color: #b91c1c; font-style: italic;">
-            <strong>Lưu ý quan trọng:</strong> Lời khuyên trên nhằm mục đích hướng dẫn sơ bộ và sơ cứu tại nhà. Nếu bé có dấu hiệu bỏ ăn, sốt cao, co giật hoặc nôn mửa liên tục, quý khách vui lòng mang bé đến ngay phòng khám hoặc gọi hotline <strong>0988.111.222</strong> để cấp cứu kịp thời!
+            <strong>Lưu ý quan trọng:</strong> ${res.medical_disclaimer || 'Khi thú cưng có dấu hiệu co giật, nôn mửa hoặc bất thường, đưa bé đến bệnh viện thú y gần nhất ngay lập tức!'}
           </div>
         `;
       }

@@ -67,8 +67,8 @@ function clearAIChatHistory() {
                 <button type="button" class="btn btn-secondary btn-sm" style="font-size: 0.74rem; border-radius: 9999px; background: #ffffff; border: 1.5px solid #cbd5e1; color: #1e293b; font-weight: 600; padding: 5px 12px; cursor: pointer;" onclick="sendChatMessage('Cách dạy chó mèo đi vệ sinh đúng chỗ')">
                     🚽 Dạy đi vệ sinh đúng chỗ
                 </button>
-                <button type="button" class="btn btn-secondary btn-sm" style="font-size: 0.74rem; border-radius: 9999px; background: #fef2f2; border: 1.5px solid #fecaca; color: #dc2626; font-weight: 700; padding: 5px 12px; cursor: pointer;" onclick="sendChatMessage('Cún bị sốt cao co giật nôn mửa')">
-                    🚨 Cảnh báo cấp cứu khẩn cấp
+                <button type="button" class="btn btn-secondary btn-sm" style="font-size: 0.74rem; border-radius: 9999px; background: #fef2f2; border: 1.5px solid #fecaca; color: #dc2626; font-weight: 700; padding: 5px 12px; cursor: pointer;" onclick="sendChatMessage('thú cưng co giật, nôn ra máu')">
+                    🚨 Demo Cấp Cứu: thú cưng co giật, nôn ra máu
                 </button>
             </div>
         `;
@@ -151,9 +151,31 @@ async function sendChatMessage(customMsg = null) {
         
         let html = '';
         if (response.is_emergency) {
-            html += `<div style="font-weight: 800; margin-bottom: 6px; color: #ef4444; display: flex; align-items: center; gap: 0.35rem;">
-                <svg style="width: 18px; height: 18px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                ${response.warning_badge || 'CẢNH BÁO CẤP CỨU Y TẾ'}
+            const hotline = response.emergency_hotline || '0988.111.222';
+            html += `
+            <div class="emergency-triage-banner">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid rgba(239, 68, 68, 0.35); padding-bottom: 6px;">
+                    <div style="font-weight: 800; color: #ef4444; display: flex; align-items: center; gap: 0.4rem; font-size: 0.95rem;">
+                        <span style="font-size: 1.3rem;">🚨</span>
+                        <span>${response.warning_badge || 'BÁO ĐỘNG ĐỎ: CA CẤP CỨU THÚ Y KHẨN CẤP (EMERGENCY TRIAGE)'}</span>
+                    </div>
+                    <span style="background: #ef4444; color: #fff; padding: 3px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Ưu Tiên Cấp 1</span>
+                </div>
+                <div style="font-size: 0.82rem; color: #991b1b; font-weight: 600; margin-bottom: 8px;">
+                    ⚡ Phát hiện dấu hiệu cấp cứu đe dọa tính mạng! Không tự điều trị tại nhà - Hãy đưa bé đến viện thú y ngay.
+                </div>
+                <div class="emergency-hotline-box">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">📞</span>
+                        <div>
+                            <div style="font-size: 0.7rem; color: #fca5a5; font-weight: 700; text-transform: uppercase;">Hotline Cấp Cứu Thú Y 24/7 Trực Tiếp:</div>
+                            <div class="emergency-hotline-num">${hotline}</div>
+                        </div>
+                    </div>
+                    <a href="tel:${hotline.replace(/\./g, '')}" class="emergency-call-btn">
+                        <span>GỌI BÁC SĨ CẤP CỨU NGAY</span>
+                    </a>
+                </div>
             </div>`;
         }
         

@@ -536,24 +536,26 @@ Nếu có thay đổi về thời gian, Anh/Chị chỉ cần nhắn lại cho P
         if is_emergency:
             flag_str = ", ".join(matched_flags)
             emergency_reply = (
-                f"🚨 **CẢNH BÁO NGUY HIỂM CẤP CỨU THÚ Y!** 🚨\n\n"
+                f"🚨 **CẢNH BÁO NGUY HIỂM CẤP CỨU THÚ Y! (EMERGENCY TRIAGE - ƯU TIÊN CẤP 1)** 🚨\n\n"
                 f"{'📸 *Bác sĩ đã ghi nhận ảnh cấp cứu đính kèm.* ' if image_data else ''}"
-                f"Hệ thống phát hiện các dấu hiệu báo động đỏ đe dọa sức khỏe của thú cưng: **[{flag_str}]**.\n\n"
-                f"⚡ **HÀNH ĐỘNG CẦN LÀM NGAY:**\n"
+                f"Hệ thống Guardrail phát hiện các dấu hiệu báo động đỏ đe dọa tính mạng thú cưng: **[{flag_str}]**.\n\n"
+                f"⚡ **HÀNH ĐỘNG CẦN LÀM NGAY LẬP TỨC:**\n"
                 f"1. **Đưa bé đến Bệnh viện Thú y / Phòng khám cấp cứu gần nhất NGAY LẬP TỨC!**\n"
                 f"2. KHÔNG tự ý cho uống thuốc hạ sốt của người (Paracetamol, Panadol cực độc với mèo và chó).\n"
                 f"3. KHÔNG tự ý kích nôn nếu không có chỉ định trực tiếp từ Bác sĩ Thú y.\n"
-                f"4. Giữ ấm cho bé, đặt nằm nghiêng nơi thông thoáng trong quá trình di chuyển cấp cứu."
+                f"4. Giữ ấm cho bé, đặt nằm nghiêng cổ thẳng nơi thông thoáng trong quá trình di chuyển cấp cứu.\n"
+                f"5. 📞 **GỌI NGAY HOTLINE CẤP CỨU 24/7:** **0988.111.222** hoặc **0988.123.456** để bác sĩ chuẩn bị sẵn phòng mổ & bình thở oxy!"
             )
             return {
                 "reply": emergency_reply,
                 "is_emergency": True,
                 "emergency_level": level,
-                "warning_badge": "🚨 KHẨN CẤP: ĐƯA ĐẾN BÁC SĨ THÚ Y NGAY",
+                "emergency_hotline": "0988.111.222",
+                "warning_badge": "🚨 BÁO ĐỘNG ĐỎ: CA CẤP CỨU THÚ Y KHẨN CẤP (HOTLINE: 0988.111.222)",
                 "veterinary_disclaimer": VETERINARY_DISCLAIMER,
                 "suggested_actions": [
-                    "Gọi hotline cấp cứu thú y 24/7",
-                    "Tìm phòng khám thú y gần nhất",
+                    "📞 Gọi Hotline Cấp Cứu 24/7 (0988.111.222)",
+                    "Chỉ đường đến phòng khám thú y gần nhất",
                     "Giữ ấm và cố định đường thở cho bé"
                 ],
                 "generated_by": "PetCare AI Safety Guardrail Engine"
