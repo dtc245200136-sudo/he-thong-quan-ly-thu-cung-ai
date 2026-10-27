@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PetCare AI - Hệ Thống Quản Lý Thú Cưng & Lịch Chăm Sóc</title>
+  <meta name="description" content="Dự án 80286: Hệ thống quản lý thú cưng và lịch chăm sóc có tích hợp AI - Học phần AIA331 Đại học Thái Nguyên, ICTU.">
+  <link rel="stylesheet" href="./css/style.css?v=16.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%230284c7%22><path d=%22M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z%22/></svg>">
+
+  <style>
+    /* Foolproof Light Theme Overrides for All Modals */
+    .modal-overlay {
+      background: rgba(15, 23, 42, 0.55) !important;
+      backdrop-filter: blur(6px) !important;
+    }
+    .modal-box {
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 20px !important;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
+      color: #0f172a !important;
+    }
+    .modal-box::-webkit-scrollbar {
+      width: 6px !important;
+    }
+    .modal-box::-webkit-scrollbar-track {
+      background: transparent !important;
+    }
+    .modal-box::-webkit-scrollbar-thumb {
+      background: #cbd5e1 !important;
+      border-radius: 999px !important;
+    }
+    .modal-box::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8 !important;
+    }
+    .modal-header {
+      border-bottom: 1px solid #f1f5f9 !important;
+    }
+    .modal-header h3 {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+      font-size: 1.25rem !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+    }
+    .modal-close-btn {
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 50% !important;
+      background: #f1f5f9 !important;
+      border: 1px solid #cbd5e1 !important;
+      color: #64748b !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .modal-close-btn:hover {
+      color: #dc2626 !important;
+      background: #fef2f2 !important;
+      border-color: #fecaca !important;
+    }
+    .form-label {
+      color: #1e293b !important;
+      font-weight: 700 !important;
+      font-size: 0.84rem !important;
+      margin-bottom: 6px !important;
+      display: block !important;
+    }
+    .form-control {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 10px !important;
+      padding: 10px 14px !important;
+      color: #0f172a !important;
+      font-size: 0.9rem !important;
+      font-weight: 500 !important;
+    }
+    .form-control:focus {
+      border-color: #0284c7 !important;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
+    }
+    .modal-actions {
+      border-top: 1px solid #f1f5f9 !important;
+    }
+    .modal-actions .btn-outline {
+      background: #ffffff !important;
+      color: #334155 !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 10px !important;
+      padding: 9px 18px !important;
+      font-weight: 600 !important;
+    }
+    .modal-actions .btn-outline:hover {
+      background: #f8fafc !important;
+      color: #0f172a !important;
+      border-color: #94a3b8 !important;
+    }
+    .modal-actions .btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%) !important;
+      color: #ffffff !important;
+      border-radius: 10px !important;
+      padding: 10px 20px !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
+    }
+  </style>
+
+</head>
+<body>
+
+  <!-- ================= TOP EMERGENCY ANNOUNCEMENT BAR ================= -->
+  <div class="emergency-top-bar">
+    <div class="emergency-bar-left">
+      <span class="emergency-pill"><span class="pulse-dot"></span> CẤP CỨU 24/7: 0988.111.222</span>
+      <span class="emergency-info-item">MỞ CỬA: 07:30 - 20:00 (T2 - CN)</span>
+      <span class="emergency-info-item">HỆ THỐNG Y TẾ & CHĂM SÓC THÚ CƯNG 24/7</span>
+    </div>
+    <div class="emergency-bar-right" style="display: flex; gap: 8px; align-items: center;">
+      <button type="button" class="emergency-portal-btn" onclick="app.navigate('portal')">
+        CỔNG KHÁCH HÀNG VIP
+      </button>
+      <button type="button" class="emergency-book-btn" onclick="app.openBookingModal()">
+        ĐẶT LỊCH NGAY
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= TOP HORIZONTAL NAVBAR ================= -->
+  <header class="app-top-navbar">
+    <div class="navbar-brand" onclick="app.navigate('dashboard')" style="cursor: pointer;">
+      <div class="nav-brand-logo">P</div>
+      <div class="nav-brand-info">
+        <span class="nav-brand-name">PetCare <span class="brand-gradient">Pro</span></span>
+        <span class="nav-role-badge">QUẢN TRỊ VIÊN</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu-links">
+      <div class="nav-item active" data-tab="dashboard">
+        <span>Tổng quan</span>
+      </div>
+      <div class="nav-item nav-pill-btn pill-portal" data-tab="portal" title="Cổng Khách Hàng Trực Tuyến & Thẻ VIP">
+        <span>Cổng Khách Hàng</span>
+      </div>
+      <div class="nav-item" data-tab="appointments">
+        <span>Lịch Hẹn</span>
+      </div>
+      <div class="nav-item" data-tab="pets">
+        <span>Thú Cưng</span>
+      </div>
+      <div class="nav-item" data-tab="care-records">
+        <span>Hồ Sơ Y Tế</span>
+      </div>
+      <div class="nav-item" data-tab="vaccines">
+        <span>Tiêm Phòng</span>
+      </div>
+      <div class="nav-item" data-tab="invoices">
+        <span>Hóa Đơn</span>
+      </div>
+      <div class="nav-item" data-tab="services">
+        <span>Dịch Vụ & Kho</span>
+      </div>
+      <div class="nav-item nav-pill-btn pill-ai" data-tab="ai-studio">
+        <span>Tư Vấn Studio</span>
+      </div>
+    </nav>
+
+    <div class="navbar-right-controls">
+      <button type="button" class="theme-toggle-btn" title="Chuyển chế độ sáng/tối" onclick="app.toggleTheme()" style="font-size: 0.8rem; font-weight: 700;">Giao diện</button>
+      
+      <!-- Unauthenticated Group: Đăng Nhập & Đăng Ký -->
+      <div id="unauth-actions" class="unauth-actions-group" style="display: none;">
+        <button type="button" class="nav-login-btn" onclick="app.openAuthModal('login')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span>Đăng Nhập</span>
+        </button>
+        <button type="button" class="nav-register-btn" onclick="app.openAuthModal('register')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          <span>Đăng Ký</span>
+        </button>
+      </div>
+
+      <!-- Authenticated Group: User Profile Pill & Đăng Xuất -->
+      <div id="auth-actions" class="auth-actions-group" style="display: inline-flex;">
+        <div id="auth-user-badge" class="nav-user-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span id="topbar-user-fullname">BS. Quản Lý</span>
+        </div>
+
+        <button type="button" class="nav-logout-btn" onclick="app.logout()">
+          <span>Đăng Xuất</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-container">
+    
+    <!-- SIDEBAR (Preserved for compatibility) -->
+    <aside class="sidebar" style="display: none;">
+      <nav class="sidebar-nav">
+        <div class="nav-item" data-tab="dashboard"><span>Bảng Điều Khiển</span></div>
+        <div class="nav-item" data-tab="appointments"><span>Lịch Hẹn</span></div>
+        <div class="nav-item" data-tab="pets"><span>Thú Cưng</span></div>
+        <div class="nav-item" data-tab="owners"><span>Chủ Nuôi</span></div>
+        <div class="nav-item" data-tab="care-records"><span>Sổ Chăm Sóc</span></div>
+        <div class="nav-item" data-tab="vaccines"><span>Tiêm Phòng</span></div>
+        <div class="nav-item" data-tab="services"><span>Bảng Giá</span></div>
+        <div class="nav-item" data-tab="invoices"><span>Hóa Đơn</span></div>
+        <div class="nav-item" data-tab="ai-studio"><span>AI Studio</span></div>
+      </nav>
+      <div class="user-panel">
+        <select id="role-select" class="role-select">
+          <option value="admin">Quản lý (Admin)</option>
+          <option value="receptionist">Lễ tân</option>
+          <option value="staff">Kỹ thuật viên</option>
+        </select>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN WRAPPER ================= -->
+    <div class="main-wrapper" style="width: 100%;">
+      
+      <!-- PAGE VIEWPORT -->
+      <main class="page-viewport">
+
+        <!-- ================= PAGE: DASHBOARD (NỘI BỘ PHÒNG KHÁM) ================= -->
+        <section id="page-dashboard" class="page-view active">
+
+          <!-- BANNER QUẢN TRỊ NỘI BỘ -->
+          <div class="portal-announcement-banner">
+            <div class="portal-banner-left">
+              <div class="shield-badge" style="display:none;"></div>
+              <div>
+                <div class="portal-banner-title">
+                  <strong>Hệ Thống Quản Trị Phòng Khám & Spa PetCare AI</strong>
+                  <span class="vip-star-badge">NỘI BỘ • ERP</span>
+                </div>
+                <p class="portal-banner-desc">Quản lý lịch hẹn, theo dõi hồ sơ y tế, tiêm phòng, quản lý doanh thu và phân quyền nhân sự thông minh.</p>
+              </div>
+            </div>
+            <div class="portal-banner-right" style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="btn-portal-auth" onclick="app.navigate('portal')" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+                Xem Cổng Khách Hàng
+              </button>
+              <button type="button" class="btn-portal-auth" onclick="app.openStaffProvisionModal()">
+                Cấp Tài Khoản Nhân Viên
+              </button>
+            </div>
+          </div>
+
+          <div class="section-header" style="margin-top: 20px;">
+            <div class="section-title">
+              <h2>Bảng Điều Khiển & Thống Kê</h2>
+              <p>Tổng hợp lượt dịch vụ, doanh thu và dữ liệu chăm sóc thú cưng thời gian thực.</p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="quick-action-btn btn-primary" onclick="app.openStaffProvisionModal()">
+                Cấp Tài Khoản Lễ Tân & KTV
+              </button>
+              <button type="button" class="quick-action-btn btn-outline" onclick="app.navigate('portal')">
+                Mở Cổng Khách Hàng
+              </button>
+              <button type="button" class="quick-action-btn btn-outline" onclick="app.loadDashboard()">
+                Làm mới dữ liệu
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="stats-grid">
+            <div class="stat-card stat-card-teal">
+              <div class="stat-header">
+                <span class="stat-title">Thú Cưng Quản Lý</span>
+                <div class="stat-icon teal" style="font-weight:700;font-size:0.9rem;">PET</div>
+              </div>
+              <div class="stat-value" id="stat-total-pets">0</div>
+              <div class="stat-sub">
+                <span class="stat-trend">↑ Đầy đủ hồ sơ</span> thể trạng & dị ứng
+              </div>
+            </div>
+
+            <div class="stat-card stat-card-indigo">
+              <div class="stat-header">
+                <span class="stat-title">Lịch Hẹn Hôm Nay</span>
+                <div class="stat-icon indigo" style="font-weight:700;font-size:0.9rem;">APT</div>
+              </div>
+              <div class="stat-value" id="stat-today-apts">0</div>
+              <div class="stat-sub">
+                <span class="stat-trend-info">● Đang phục vụ</span> & chờ tiếp đón
+              </div>
+            </div>
+
+            <div class="stat-card stat-card-pink">
+              <div class="stat-header">
+                <span class="stat-title">Tổng Doanh Thu</span>
+                <div class="stat-icon pink" style="font-weight:700;font-size:0.9rem;">VNĐ</div>
+              </div>
+              <div class="stat-value" id="stat-revenue">0 ₫</div>
+              <div class="stat-sub">Từ dịch vụ spa & tiêm phòng</div>
+            </div>
+
+            <div class="stat-card stat-card-amber">
+              <div class="stat-header">
+                <span class="stat-title">Tỷ Lệ Khách Quay Lại</span>
+                <div class="stat-icon amber" style="font-weight:700;font-size:0.9rem;">VIP</div>
+              </div>
+              <div class="stat-value" id="stat-return-rate">0%</div>
+              <div class="stat-sub">Chủ nuôi gắn bó định kỳ</div>
+            </div>
+          </div>
+
+          <!-- Two-column: Today's Schedule & Popular Services -->
+          <div class="grid-2col">
+            <div class="card-box">
+              <div class="card-box-header">
+                <div class="card-box-title">
+                  Lịch Hẹn Đón Tiếp Hôm Nay
+                </div>
+                <button class="quick-action-btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="app.openBookingModal()">
+                  + Đặt lịch mới
+                </button>
+              </div>
+              <div class="table-container">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>Giờ Hẹn</th>
+                      <th>Thú Cưng</th>
+                      <th>Chủ Nuôi</th>
+                      <th>Dịch Vụ</th>
+                      <th>Trạng Thái</th>
+                      <th>Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-today-table">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card-box">
+              <div class="card-box-header">
+                <div class="card-box-title">
+                  Dịch Vụ Được Yêu Thích
+                </div>
+              </div>
+              <div id="popular-services-list">
+                <!-- Populated dynamically -->
+              </div>
+
+              <!-- AI Quick Banner -->
+              <div class="ai-quick-banner">
+                <div class="ai-quick-title">Tích Hợp AI Trợ Lý</div>
+                <p class="ai-quick-desc">Tự động sinh tin nhắn nhắc lịch tiêm, tóm tắt diễn biến sức khỏe và tư vấn chăm sóc có disclaimer y tế thú y.</p>
+                <button class="quick-action-btn btn-ai-magic" style="width: 100%; justify-content: center;" onclick="app.navigate('ai-studio')">
+                  Mở AI Studio Ngay
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE: DEDICATED CUSTOMER PORTAL ================= -->
+        <section id="page-portal" class="page-view portal-premium-view">
+          
+          <!-- LUXURY CONCIERGE HEADER -->
+          <div class="portal-luxury-header">
+            <div class="portal-header-left">
+              <div class="portal-crown-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>PETCARE VIP CONCIERGE • HỘI VIÊN ĐẶC QUYỀN</span>
+              </div>
+              <h1 class="portal-headline" id="portal-greeting-title">
+                Chào Mừng Quý Khách Đến Cổng VIP!
+              </h1>
+              <p class="portal-subheadline" id="portal-greeting-subtitle">
+                Tra cứu hồ sơ y bạ bé cưng, theo dõi sổ tiêm chủng, đặt lịch spa và kết nối Bác sĩ Thú Y tư vấn 24/7.
+              </p>
+            </div>
+            <div class="portal-header-actions">
+              <button type="button" class="portal-action-btn portal-btn-glow" onclick="app.openBookingModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+                <span>Đặt Lịch Cho Bé</span>
+              </button>
+              <button type="button" class="portal-action-btn portal-btn-qr" onclick="app.openPortalQrModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span>Mã Check-in QR</span>
+              </button>
+              <button type="button" class="portal-action-btn portal-btn-outline" onclick="app.navigate('dashboard')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                <span>Bảng Quản Trị</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4-METRIC LUXURY STATS RIBBON -->
+          <div class="portal-stats-grid">
+            <div class="portal-stat-card">
+              <div class="portal-stat-icon-wrap stat-icon-paw">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </div>
+              <div class="portal-stat-info">
+                <span class="portal-stat-label">Bé Cưng Gia Đình</span>
+                <strong class="portal-stat-num" id="portal-kpi-pets">1 Bé Cưng</strong>
+                <span class="portal-stat-sub" id="portal-kpi-pets-sub">Đã xác thực y bạ</span>
+              </div>
+            </div>
+            <div class="portal-stat-card">
+              <div class="portal-stat-icon-wrap stat-icon-vax">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <polyline points="9 12 11 14 15 10"/>
+                </svg>
+              </div>
+              <div class="portal-stat-info">
+                <span class="portal-stat-label">Sổ Tiêm Chủng</span>
+                <strong class="portal-stat-num" id="portal-kpi-vaccines">An Toàn 100%</strong>
+                <span class="portal-stat-sub" id="portal-kpi-vaccines-sub">Đã tiêm phòng đầy đủ</span>
+              </div>
+            </div>
+            <div class="portal-stat-card">
+              <div class="portal-stat-icon-wrap stat-icon-cal">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+              </div>
+              <div class="portal-stat-info">
+                <span class="portal-stat-label">Lịch Hẹn Gần Nhất</span>
+                <strong class="portal-stat-num" id="portal-kpi-next-apt">Chưa có lịch</strong>
+                <span class="portal-stat-sub" id="portal-kpi-next-apt-sub">Bấm đặt lịch ngay</span>
+              </div>
+            </div>
+            <div class="portal-stat-card">
+              <div class="portal-stat-icon-wrap stat-icon-pts">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <div class="portal-stat-info">
+                <span class="portal-stat-label">Hạng Hội Viên & Điểm</span>
+                <strong class="portal-stat-num" id="portal-kpi-points">1,450 PTS</strong>
+                <span class="portal-stat-sub" id="portal-kpi-tier-sub">Giảm 10% trọn đời</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- HERO SECTION: SEARCH CONCIERGE & 3D HOLOGRAPHIC VIP CARD -->
+          <div class="portal-hero-container">
+            
+            <!-- LEFT: Search & Quick Member Select -->
+            <div class="portal-welcome-card">
+              <div class="portal-search-header-group">
+                <div class="portal-search-badge">
+                  <span class="pulse-dot"></span>
+                  <span>TRA CỨU HỒ SƠ THÀNH VIÊN TRỰC TUYẾN</span>
+                </div>
+                <h3 class="portal-search-heading">Nhập Số Điện Thoại Để Mở Hồ Sơ</h3>
+                <p class="portal-search-subtext">Hệ thống nhận diện tự động thẻ thành viên, danh sách bé cưng và lịch sử y tế.</p>
+              </div>
+
+              <!-- Search Input Bar -->
+              <div class="portal-search-bar">
+                <span class="search-lens-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </span>
+                <input type="text" id="portal-phone-input" class="portal-search-input" 
+                       placeholder="Nhập số điện thoại (VD: 0987654321)..." 
+                       onkeydown="if(event.key === 'Enter') app.searchPortalOwner()">
+                <button type="button" class="portal-search-btn" onclick="app.searchPortalOwner()">
+                  <span>Tra Cứu Hồ Sơ</span>
+                </button>
+              </div>
+
+              <!-- Quick Sample Member Chips -->
+              <div class="portal-chips-container">
+                <div class="chips-title-row">
+                  <span class="chips-title">Hồ sơ khách hàng VIP tiêu biểu:</span>
+                  <span class="chips-hint">Bấm để chuyển nhanh</span>
+                </div>
+                <div class="portal-quick-chips">
+                  <button type="button" class="portal-chip-btn active" onclick="app.selectPortalOwner('0987654321')">
+                    <span class="chip-avatar">BT</span>
+                    <div class="chip-meta">
+                      <span class="chip-name">Chị Bích Trâm</span>
+                      <span class="chip-tier tier-diamond">Diamond VIP</span>
+                    </div>
+                  </button>
+                  <button type="button" class="portal-chip-btn" onclick="app.selectPortalOwner('0912345678')">
+                    <span class="chip-avatar">MQ</span>
+                    <div class="chip-meta">
+                      <span class="chip-name">Anh Minh Quân</span>
+                      <span class="chip-tier tier-gold">Gold VIP</span>
+                    </div>
+                  </button>
+                  <button type="button" class="portal-chip-btn" onclick="app.selectPortalOwner('0978112233')">
+                    <span class="chip-avatar">TT</span>
+                    <div class="chip-meta">
+                      <span class="chip-name">Chị Thuỳ Trang</span>
+                      <span class="chip-tier tier-diamond">2 Bé Cưng</span>
+                    </div>
+                  </button>
+                  <button type="button" class="portal-chip-btn" onclick="app.selectPortalOwner('0934567890')">
+                    <span class="chip-avatar">QH</span>
+                    <div class="chip-meta">
+                      <span class="chip-name">Anh Quốc Huy</span>
+                      <span class="chip-tier tier-gold">Gold VIP</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Trust & Hotline Footer -->
+              <div class="portal-trust-footer">
+                <div class="trust-hotline">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  <div>
+                    <span class="hotline-label">Đường dây nóng cấp cứu 24/7:</span>
+                    <strong class="hotline-number">0988.111.222</strong>
+                  </div>
+                </div>
+                <div class="trust-badge-right">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                  <span>Bảo mật y tế & Tích điểm chuẩn quốc tế</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: 3D HOLOGRAPHIC TITANIUM VIP CARD -->
+            <div class="portal-vip-card-wrapper" id="portal-vip-card-wrapper">
+              <div class="portal-vip-card-3d" id="portal-vip-card-element" title="Thẻ Hội Viên VIP PetCare">
+                <!-- Glare & Ambient Glow Layer -->
+                <div class="vip-card-glare"></div>
+                <div class="vip-card-mesh-bg"></div>
+
+                <!-- Top: EMV Chip + Brand + Tier Badge -->
+                <div class="vip-card-top">
+                  <div class="vip-card-logo-area">
+                    <div class="vip-emv-chip"></div>
+                    <div class="vip-brand-text-block">
+                      <span class="vip-brand-title">PETCARE VIP CLUB</span>
+                      <span class="vip-brand-sub">THẺ HỘI VIÊN ĐẶC QUYỀN</span>
+                    </div>
+                  </div>
+                  <div class="vip-badge-cluster">
+                    <span class="vip-contactless-wave" title="Thẻ không chạm RFID">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8.5 16.5a5 5 0 0 1 0-7"/>
+                        <path d="M12 19a8.5 8.5 0 0 0 0-14"/>
+                        <path d="M15.5 21.5a12 12 0 0 0 0-19"/>
+                      </svg>
+                    </span>
+                    <span class="vip-badge-pill" id="portal-vip-badge">DIAMOND VIP</span>
+                  </div>
+                </div>
+
+                <!-- Middle: Cardholder Name & Verified Phone -->
+                <div class="vip-card-middle">
+                  <div class="vip-card-label-small">TÊN CHỦ THẺ / CARDHOLDER</div>
+                  <div class="vip-card-owner-name" id="portal-vip-owner-name">NGUYỄN THỊ BÍCH TRÂM</div>
+                  <div class="vip-card-phone-row">
+                    <span class="vip-card-phone" id="portal-vip-phone">0987 ••• 321</span>
+                    <span class="vip-card-verified">VERIFIED MEMBER</span>
+                  </div>
+                </div>
+
+                <!-- Bottom: Stats & QR Code Trigger -->
+                <div class="vip-card-bottom">
+                  <div class="vip-stat-box">
+                    <span class="vip-stat-label">ĐIỂM TÍCH LŨY</span>
+                    <span class="vip-stat-value" id="portal-vip-points">1,450 PTS</span>
+                  </div>
+                  <div class="vip-stat-box">
+                    <span class="vip-stat-label">BÉ CƯNG SỞ HỮU</span>
+                    <span class="vip-stat-value" id="portal-vip-pets-count">1 BÉ CƯNG</span>
+                  </div>
+                  <button type="button" class="vip-qr-quick-btn" onclick="app.openPortalQrModal()" title="Mở mã QR check-in tại quầy">
+                    <span>Mã QR</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- PORTAL MAIN 2-COLUMN LAYOUT -->
+          <div class="portal-main-layout">
+            
+            <!-- LEFT COLUMN: Interactive Tabs & Panes -->
+            <div class="portal-content-column">
+              
+              <!-- Segmented Navigation Tabs -->
+              <div class="portal-nav-tabs">
+                <button type="button" class="portal-tab-btn active" data-portal-tab="pets" onclick="app.switchPortalTab('pets')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  <span>Bé Cưng Của Tôi</span>
+                  <span class="tab-count-pill" id="tab-count-pets">0</span>
+                </button>
+                <button type="button" class="portal-tab-btn" data-portal-tab="vaccines" onclick="app.switchPortalTab('vaccines')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                  <span>Sổ Tiêm Chủng</span>
+                  <span class="tab-count-pill" id="tab-count-vaccines">0</span>
+                </button>
+                <button type="button" class="portal-tab-btn" data-portal-tab="appointments" onclick="app.switchPortalTab('appointments')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span>Lịch Hẹn Chăm Sóc</span>
+                  <span class="tab-count-pill" id="tab-count-appointments">0</span>
+                </button>
+                <button type="button" class="portal-tab-btn" data-portal-tab="invoices" onclick="app.switchPortalTab('invoices')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  <span>Chi Tiêu & Tiết Kiệm VIP</span>
+                </button>
+              </div>
+
+              <!-- Tab Panes Container -->
+              <div class="portal-tab-panes">
+                
+                <!-- PANE 1: PETS -->
+                <div id="pane-portal-pets" class="portal-tab-pane active">
+                  <div class="card-box portal-pane-card">
+                    <div class="card-box-header">
+                      <div class="card-box-title">
+                        
+                        <div>
+                          <h3 class="card-title-text">Hồ Sơ Bé Cưng & Thẻ Y Bạ Số</h3>
+                          <p class="card-title-desc">Theo dõi thể trạng, cân nặng, tiền sử dị ứng và đặt lịch riêng từng bé.</p>
+                        </div>
+                      </div>
+                      <button type="button" class="quick-action-btn btn-primary" onclick="app.openBookingModal()">
+                        + Đặt Lịch Cho Bé
+                      </button>
+                    </div>
+                    <div id="portal-client-pets-list" class="portal-pets-grid">
+                      <!-- Populated dynamically -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PANE 2: VACCINES -->
+                <div id="pane-portal-vaccines" class="portal-tab-pane">
+                  <div class="card-box portal-pane-card">
+                    <div class="card-box-header">
+                      <div class="card-box-title">
+                        
+                        <div>
+                          <h3 class="card-title-text">Sổ Tiêm Chủng Chuẩn Quốc Tế</h3>
+                          <p class="card-title-desc">Lịch sử các mũi vắc-xin đã tiêm và các mũi nhắc định kỳ để bảo vệ sức khỏe bé.</p>
+                        </div>
+                      </div>
+                      <button type="button" class="quick-action-btn btn-outline" onclick="app.navigate('vaccines')">
+                        Xem Tất Cả Lịch Tiêm
+                      </button>
+                    </div>
+                    <div id="portal-client-vaccines-list">
+                      <!-- Populated dynamically -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PANE 3: APPOINTMENTS -->
+                <div id="pane-portal-appointments" class="portal-tab-pane">
+                  <div class="card-box portal-pane-card">
+                    <div class="card-box-header">
+                      <div class="card-box-title">
+                        
+                        <div>
+                          <h3 class="card-title-text">Lịch Hẹn Chăm Sóc & Tiến Trình Spa</h3>
+                          <p class="card-title-desc">Cập nhật trạng thái lịch hẹn thời gian thực từ lúc tiếp đón đến khi hoàn thành.</p>
+                        </div>
+                      </div>
+                      <button type="button" class="quick-action-btn btn-primary" onclick="app.openBookingModal()">
+                        + Đặt Lịch Hẹn Mới
+                      </button>
+                    </div>
+                    <div id="portal-client-appointments-list">
+                      <!-- Populated dynamically -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PANE 4: INVOICES & VIP SAVINGS -->
+                <div id="pane-portal-invoices" class="portal-tab-pane">
+                  <div class="card-box portal-pane-card">
+                    <div class="card-box-header">
+                      <div class="card-box-title">
+                        
+                        <div>
+                          <h3 class="card-title-text">Lịch Sử Hoá Đơn & Tiết Kiệm Hội Viên VIP</h3>
+                          <p class="card-title-desc">Tổng hợp chi phí sử dụng dịch vụ và số tiền quý khách đã tiết kiệm được nhờ thẻ VIP.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="portal-client-invoices-list">
+                      <!-- Populated dynamically -->
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Medical Consultation & Clinic Doctors Sidebar -->
+            <div class="portal-sidebar-column">
+              
+              <!-- Bác Sĩ Thú Y Trực Tuyến & Cố Vấn Sức Khỏe 24/7 -->
+              <div class="portal-ai-widget">
+                <div class="portal-ai-widget-header">
+                  <div class="ai-avatar-glow" style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); font-weight:800; font-size: 0.8rem; color:#0369a1;">BS</div>
+                  <div>
+                    <div class="ai-live-badge" style="color: #0284c7;">
+                      <span class="pulse-dot"></span>
+                      <span>HỖ TRỢ 24/7 • BÁC SĨ THÚ Y TRỰC TUYẾN</span>
+                    </div>
+                    <h3 class="portal-ai-widget-title" style="color: #0f172a;">Tư Vấn Y Khoa & Chăm Sóc Bé</h3>
+                    <p class="portal-ai-widget-subtitle" style="color: #64748b;">Hỏi đáp triệu chứng, phác đồ dinh dưỡng & sơ cứu ban đầu</p>
+                  </div>
+                </div>
+
+                <div class="portal-ai-suggestions">
+                  <span class="sugg-header">Câu hỏi thường gặp từ chủ nuôi:</span>
+                  <button type="button" class="portal-ai-chip" onclick="app.setPortalAiPrompt('Bé cún bị ngứa gãi nhiều và rụng lông là dấu hiệu bệnh gì và cần xử lý thế nào?')">
+                    Bé cún ngứa gãi nhiều & rụng lông từng mảng?
+                  </button>
+                  <button type="button" class="portal-ai-chip" onclick="app.setPortalAiPrompt('Mèo con 2 tháng tuổi nên ăn gì và cần tiêm phòng những mũi vắc-xin nào?')">
+                    Mèo con 2 tháng tuổi ăn gì & tiêm phòng mũi nào?
+                  </button>
+                  <button type="button" class="portal-ai-chip" onclick="app.setPortalAiPrompt('Lịch tiêm nhắc phòng bệnh dại cho chó mèo định kỳ bao lâu một lần?')">
+                    Lịch tiêm nhắc vắc-xin dại định kỳ bao lâu 1 lần?
+                  </button>
+                </div>
+
+                <div class="portal-ai-input-wrap">
+                  <input type="text" id="portal-ai-input" class="portal-ai-input" 
+                         placeholder="Mô tả triệu chứng hoặc thắc mắc của bạn..." 
+                         onkeydown="if(event.key === 'Enter') app.askPortalAi()">
+                  <button type="button" class="portal-ai-btn" id="portal-ai-btn" onclick="app.askPortalAi()" style="background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+                    Gửi Câu Hỏi
+                  </button>
+                </div>
+
+                <div id="portal-ai-answer" class="portal-ai-answer-box">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+
+              <!-- Đội Ngũ Bác Sĩ & Thông Tin Phòng Khám -->
+              <div class="card-box" style="border-radius: 20px; border-color: #e2e8f0; margin-bottom: 0;">
+                <div class="card-box-header" style="margin-bottom: 12px;">
+                  <div class="card-box-title" style="font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    <span>Bác Sĩ Chuyên Khoa Trực</span>
+                  </div>
+                  <span class="badge badge-success" style="font-size: 0.72rem;">Đang làm việc</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem; color: #475569;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 34px; height: 34px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem;">QH</div>
+                    <div>
+                      <strong style="color: #0f172a; font-size: 0.86rem;">BS. CKI Trần Quang Hải</strong>
+                      <span style="display: block; font-size: 0.75rem; color: #64748b;">Trưởng khoa Nội & Chẩn đoán hình ảnh</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 34px; height: 34px; border-radius: 50%; background: #fdf2f8; color: #db2777; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem;">MA</div>
+                    <div>
+                      <strong style="color: #0f172a; font-size: 0.86rem;">BS. Lê Thị Mai Anh</strong>
+                      <span style="display: block; font-size: 0.75rem; color: #64748b;">Chuyên gia Dinh dưỡng & Da liễu thú y</span>
+                    </div>
+                  </div>
+                  <div style="padding-top: 10px; border-top: 1px dashed #e2e8f0; font-size: 0.78rem; color: #64748b; line-height: 1.6;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      <span><strong>Địa chỉ:</strong> Số 123 Đường Quang Trung, TP. Thái Nguyên</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      <span><strong>Giờ khám:</strong> 07:30 - 21:00 (Cấp cứu 24/7: <strong style="color: #dc2626;">0988.111.222</strong>)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- VIP Benefits & Exclusive Perks -->
+              <div class="portal-vip-benefits-card">
+                <div class="benefits-header">
+                  
+                  <div>
+                    <h3 class="benefits-title">Đặc Quyền Hội Viên VIP</h3>
+                    <span class="benefits-badge" id="portal-benefits-tier-badge">Hạng Diamond VIP</span>
+                  </div>
+                </div>
+
+                <div class="benefits-list">
+                  <div class="benefit-item">
+                    <div class="benefit-icon-box" style="font-weight:700;font-size:0.75rem;">01</div>
+                    <div class="benefit-content">
+                      <strong>Tặng 01 buổi Spa Thảo Mộc miễn phí</strong>
+                      <p>Gói tắm sấy thảo dược dưỡng lông cao cấp vào tháng sinh nhật của bé cưng.</p>
+                    </div>
+                  </div>
+                  <div class="benefit-item">
+                    <div class="benefit-icon-box" style="font-weight:700;font-size:0.75rem;">02</div>
+                    <div class="benefit-content">
+                      <strong>Chiết khấu trực tiếp 10% trọn đời</strong>
+                      <p>Áp dụng tự động cho mọi hoá đơn Grooming Spa, khách sạn thú cưng & tiêm chủng.</p>
+                    </div>
+                  </div>
+                  <div class="benefit-item">
+                    <div class="benefit-icon-box" style="font-weight:700;font-size:0.75rem;">03</div>
+                    <div class="benefit-content">
+                      <strong>Ưu tiên tiếp đón & Phòng chờ VIP</strong>
+                      <p>Check-in qua mã QR không cần xếp hàng chờ đợi vào dịp cuối tuần và lễ tết.</p>
+                    </div>
+                  </div>
+                  <div class="benefit-item">
+                    <div class="benefit-icon-box" style="font-weight:700;font-size:0.75rem;">04</div>
+                    <div class="benefit-content">
+                      <strong>Bác sĩ trưởng khoa khám & vệ sinh định kỳ</strong>
+                      <p>Miễn phí kiểm tra tai mắt mũi, cắt móng và vắt tuyến hôi mỗi lần đến spa.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================= PAGE: APPOINTMENTS ================= -->
+        <section id="page-appointments" class="page-view">
+          <div class="section-header">
+            <div class="section-title">
+              <h2>Quản Lý Lịch Hẹn & Đặt Lịch</h2>
+              <p>Theo dõi lịch tắm spa, cắt tỉa, tiêm phòng; tự động kiểm tra chống trùng lịch.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <input type="date" id="filter-apt-date" class="form-control" style="width: 170px;" onchange="app.loadAppointments()">
+              <select id="filter-apt-status" class="form-control" style="width: 160px;" onchange="app.loadAppointments()">
+                <option value="">Tất cả trạng thái</option>
+                <option value="confirmed">Đã xác nhận</option>
+                <option value="in_progress">Đang làm dịch vụ</option>
+                <option value="completed">Đã hoàn thành</option>
+                <option value="cancelled">Đã hủy</option>
+              </select>
+              <button class="quick-action-btn btn-primary" onclick="app.openBookingModal()">
+                + Đặt Lịch Mới
+              </button>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Thời Gian</th>
+                    <th>Thú Cưng</th>
+                    <th>Chủ Nuôi</th>
+                    <th>Gói Dịch Vụ</th>
+                    <th>Trạng Thái</th>
+                    <th>Thao Tác</th>
+                  </tr>
+                </thead>
+                <tbody id="appointments-table-body">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE: PETS ================= -->
+        <section id="page-pets" class="page-view">
+          <div class="section-header">
+            <div class="section-title">
+              <h2>Hồ Sơ Thú Cưng</h2>
+              <p>Danh bạ các bé cưng, theo dõi giống loài, thể trạng, tiền sử dị ứng và tóm tắt AI.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="search-pet-input" class="form-control" placeholder="Tìm theo tên hoặc giống..." style="width: 240px;" oninput="app.loadPets()">
+              <select id="filter-pet-species" class="form-control" style="width: 140px;" onchange="app.loadPets()">
+                <option value="">Tất cả loài</option>
+                <option value="Chó">Chó</option>
+                <option value="Mèo">Mèo</option>
+              </select>
+              <button class="quick-action-btn btn-primary" onclick="app.openAddPetModal()">
+                + Thêm Thú Cưng
+              </button>
+            </div>
+          </div>
+
+          <div class="pet-grid" id="pets-grid-container">
+            <!-- Dynamic pet cards -->
+          </div>
+        </section>
+
+        <!-- ================= PAGE: OWNERS ================= -->
+        <section id="page-owners" class="page-view">
+          <div class="section-header">
+            <div class="section-title">
+              <h2>Danh Sách Chủ Nuôi</h2>
+              <p>Thông tin liên hệ, địa chỉ và lịch sử thú cưng của khách hàng thân thiết.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="search-owner-input" class="form-control" placeholder="Tìm theo tên hoặc SĐT..." style="width: 240px;" oninput="app.loadOwners()">
+              <button class="quick-action-btn btn-primary" onclick="app.openAddOwnerModal()">
+                + Thêm Chủ Nuôi
+              </button>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Họ & Tên</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Email</th>
+                    <th>Địa Chỉ</th>
+                    <th>Số Thú Cưng</th>
+                    <th>Thao Tác</th>
+                  </tr>
+                </thead>
+                <tbody id="owners-table-body">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE: CARE RECORDS ================= -->
+        <section id="page-care-records" class="page-view">
+          <div class="section-header">
+            <div class="section-title">
+              <h2>Sổ Ghi Nhận Chăm Sóc Spa & Tình Trạng</h2>
+              <p>Lưu lại tình trạng da lông, cân nặng, hành vi và hướng dẫn gia đình sau dịch vụ.</p>
+            </div>
+          </div>
+
+          <div id="care-records-timeline">
+            <!-- Dynamic care records -->
+          </div>
+        </section>
+
+        <!-- ================= PAGE: VACCINES ================= -->
+        <section id="page-vaccines" class="page-view">
+          <div class="section-header">
+            <div class="section-title">
+              <h2>Quản Lý Lịch Nhắc Tiêm & Phòng Bệnh</h2>
+              <p>Theo dõi mũi tiêm nhắc lại, tẩy giun định kỳ; tự động phát hiện mũi quá hạn.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <select id="filter-vac-status" class="form-control" style="width: 170px;" onchange="app.loadVaccines()">
+                <option value="">Tất cả trạng thái</option>
+                <option value="pending">Đến hạn sắp tới</option>
+                <option value="overdue">ĐÃ QUÁ HẠN</option>
+                <option value="completed">Đã hoàn thành</option>
+              </select>
+              <button class="quick-action-btn btn-primary" onclick="app.openAddVaccineModal()">
+                + Thêm Lịch Tiêm
+              </button>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Thú Cưng & Chủ</th>
+                    <th>Vaccine / Phòng Bệnh</th>
+                    <th>Mũi Trước</th>
+                    <th>Ngày Đến Hạn</th>
+                    <th>Trạng Thái</th>
+                    <th>Thao Tác</th>
+                  </tr>
+                </thead>
+                <tbody id="vaccines-table-body">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE: SERVICES ================= -->
+        <section id="page-services" class="page-view">
+          <div class="section-header">
+            <div class="section-title">
+              <h2>Bảng Giá Dịch Vụ & Spa Thú Cưng</h2>
+              <p>Danh mục dịch vụ chuẩn, thời gian thực hiện ước tính và đơn giá niêm yết.</p>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Tên Gói Dịch Vụ</th>
+                    <th>Phân Loại</th>
+                    <th>Thời Lượng</th>
+                    <th>Đơn Giá</th>
+                    <th>Mô Tả Quy Trình</th>
+                  </tr>
+                </thead>
+                <tbody id="services-table-body">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE: INVOICES ================= -->
+        <section id="page-invoices" class="page-view">
+          <div class="section-header">
+            <div class="section-title">
+              <h2>Hóa Đơn & Theo Dõi Thanh Toán</h2>
+              <p>Quản lý doanh thu, hình thức thanh toán (Tiền mặt, QR Code, Thẻ) và xuất hóa đơn.</p>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Mã Hóa Đơn</th>
+                    <th>Khách Hàng</th>
+                    <th>Dịch Vụ Phục Vụ</th>
+                    <th>Thành Tiền</th>
+                    <th>Thanh Toán</th>
+                    <th>Thao Tác</th>
+                  </tr>
+                </thead>
+                <tbody id="invoices-table-body">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE: AI STUDIO ================= -->
+        <section id="page-ai-studio" class="page-view">
+          <div class="section-header">
+            <div class="section-title">
+              <h2>AI Studio - Trợ Lý Chăm Sóc Thông Minh</h2>
+              <p>Tích hợp AI sinh nhắc lịch, tóm tắt hồ sơ và tư vấn kiến thức an toàn có disclaimer y tế thú y.</p>
+            </div>
+            <div>
+              <span id="ai-engine-status" style="font-size: 0.8rem; padding: 6px 14px; background: rgba(13,148,136,0.15); border: 1px solid var(--primary); border-radius: var(--radius-full); color: #2dd4bf;">
+                Đang nạp trạng thái AI...
+              </span>
+            </div>
+          </div>
+
+          <div class="ai-studio-container">
+            
+            <!-- Left Tabs -->
+            <div class="ai-sidebar-tabs">
+              <button class="ai-tab-btn active" data-ai-tab="chat" onclick="app.switchAiTab('chat')">
+                
+                <div>
+                  <div>Trợ Lý Chăm Sóc</div>
+                  <div style="font-size: 0.72rem; font-weight: 400; color: var(--text-dim);">Hỏi đáp kèm cảnh báo an toàn</div>
+                </div>
+              </button>
+
+              <button class="ai-tab-btn" data-ai-tab="summary" onclick="app.switchAiTab('summary')">
+                
+                <div>
+                  <div>Tóm Tắt Hồ Sơ AI</div>
+                  <div style="font-size: 0.72rem; font-weight: 400; color: var(--text-dim);">Đọc lịch sử & cảnh báo da lông</div>
+                </div>
+              </button>
+
+              <button class="ai-tab-btn" data-ai-tab="settings" onclick="app.switchAiTab('settings')">
+                
+                <div>
+                  <div>Cấu Hình Động Cơ AI</div>
+                  <div style="font-size: 0.72rem; font-weight: 400; color: var(--text-dim);">Gemini / OpenAI / Heuristic</div>
+                </div>
+              </button>
+            </div>
+
+            <!-- Right Content Panels -->
+            <div class="ai-panel-content">
+              
+              <!-- Tab 1: Chatbot -->
+              <div id="ai-panel-chat" class="ai-tab-panel" style="display: flex; flex-direction: column; height: 100%;">
+                <!-- Mandatory Medical Disclaimer Banner -->
+                <div class="ai-disclaimer-box">
+                  
+                  <div class="disclaimer-text">
+                    <strong>CẢNH BÁO GIỚI HẠN Y TẾ:</strong> Trợ lý AI chỉ đưa thông tin tham khảo cơ bản về vệ sinh, chải lông và dinh dưỡng. AI <strong>KHÔNG</strong> chẩn đoán bệnh hoặc kê đơn thuốc. Khi thú cưng có biểu hiện co giật, sốt cao, nôn ói hoặc bất thường, hãy đưa bé đến <strong>Bác sĩ Thú y</strong> ngay lập tức!
+                  </div>
+                </div>
+
+                <div class="chat-messages" id="ai-chat-messages">
+                  <div class="chat-bubble ai">
+                    Chào bạn! Mình là <strong>Trợ lý AI PetCare</strong><br>
+                    Mình có thể giúp bạn giải đáp thắc mắc về tần suất tắm spa, dinh dưỡng hợp lý, chăm sóc lông da hay lịch tiêm phòng cho chó mèo. Bạn cần mình tư vấn điều gì hôm nay?
+                    <div class="topic-pills">
+                      <span class="topic-pill" onclick="app.sendAiConsultationMessage('Chó mèo nên tắm bao nhiêu lần một tuần?')">Tần suất tắm</span>
+                      <span class="topic-pill" onclick="app.sendAiConsultationMessage('Cách chăm sóc lông cún đỡ bị rụng và rối?')">Giảm rụng lông</span>
+                      <span class="topic-pill" onclick="app.sendAiConsultationMessage('Các loại thức ăn người tuyệt đối cấm cho chó mèo?')">Thức ăn cấm kỵ</span>
+                      <span class="topic-pill" onclick="app.sendAiConsultationMessage('Lịch tiêm phòng vaccine định kỳ cho chó gồm những mũi nào?')">Lịch tiêm phòng</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="chat-input-bar">
+                  <input type="text" id="ai-chat-input" class="chat-input-field" placeholder="Nhập câu hỏi chăm sóc thú cưng tại đây... (Thử hỏi: 'chó nôn ra máu' để test cảnh báo cấp cứu)">
+                  <button id="ai-chat-send" class="quick-action-btn btn-ai-magic">
+                    Gửi Hỏi AI
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tab 2: Pet Summary -->
+              <div id="ai-panel-summary" class="ai-tab-panel" style="display: none; flex-direction: column; height: 100%; overflow-y: auto;">
+                <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; gap: 14px; align-items: flex-end;">
+                  <div style="flex: 1;">
+                    <label class="form-label">Chọn Thú Cưng Cần Phân Tích & Tóm Tắt:</label>
+                    <select id="ai-summary-pet-select" class="form-control pet-select">
+                      <!-- Populated dynamically -->
+                    </select>
+                  </div>
+                  <button class="quick-action-btn btn-ai-magic" onclick="app.generatePetSummary()">
+                    Khởi Chạy Tóm Tắt AI
+                  </button>
+                </div>
+
+                <div id="ai-summary-result" style="flex: 1; padding: 20px;">
+                  <div style="color: var(--text-dim); text-align: center; padding: 50px 20px;">
+                    Chọn một bé cưng ở trên và bấm "Khởi Chạy Tóm Tắt AI" để hệ thống phân tích toàn bộ lịch sử spa, thể trạng, biến động cân nặng và tiêm chủng.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 3: AI Settings -->
+              <div id="ai-panel-settings" class="ai-tab-panel" style="display: none; flex-direction: column; height: 100%; padding: 24px; overflow-y: auto;">
+                <h3 style="color: #0f172a; margin-bottom: 8px; font-weight: 800;">Cấu Hình Động Cơ AI (AI Engine Settings)</h3>
+                <p style="color: #475569; font-size: 0.85rem; margin-bottom: 20px;">Hệ thống hỗ trợ cơ chế đa động cơ thông minh: Tích hợp trực tiếp Gemini 1.5 Flash hoặc OpenAI GPT-3.5 khi có API Key; và tự động kích hoạt Động cơ Heuristic Nội bộ an toàn 100% khi chạy offline.</p>
+
+                <form onsubmit="app.handleSaveAiSettings(event)">
+                  <div class="form-group">
+                    <label class="form-label">Google Gemini API Key (Tùy chọn):</label>
+                    <input type="password" id="ai-gemini-key" class="form-control" placeholder="AIzaSy...">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">OpenAI API Key (Tùy chọn):</label>
+                    <input type="password" id="ai-openai-key" class="form-control" placeholder="sk-...">
+                  </div>
+
+                  <button type="submit" class="quick-action-btn btn-primary" style="margin-top: 10px;">
+                    Lưu Cấu Hình AI
+                  </button>
+                </form>
+
+                <div style="margin-top: 30px;">
+                  <h4 style="color: #0f172a; font-size: 0.95rem; margin-bottom: 12px; font-weight: 700;">Nhật Ký Phiên Làm Việc AI (Session Logs)</h4>
+                  <div class="table-container">
+                    <table class="custom-table">
+                      <thead>
+                        <tr>
+                          <th>Tính Năng</th>
+                          <th>Ngữ Cảnh / Prompt</th>
+                          <th>Mô Hình Sử Dụng</th>
+                          <th>Thời Gian</th>
+                        </tr>
+                      </thead>
+                      <tbody id="ai-logs-table-body">
+                        <!-- Dynamic logs -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal: Booking Appointment -->
+  <div id="booking-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Đặt Lịch Chăm Sóc Mới</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('booking-modal')">×</button>
+      </div>
+      <form onsubmit="app.handleBookingSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Thú Cưng (*):</label>
+          <select id="booking-pet-id" class="form-control pet-select" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dịch Vụ Chăm Sóc (*):</label>
+          <select id="booking-service-id" class="form-control service-select" required></select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ngày Hẹn (*):</label>
+            <input type="date" id="booking-date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Giờ Hẹn (*):</label>
+            <input type="time" id="booking-time" class="form-control" value="09:00" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ghi Chú Đặc Biệt:</label>
+          <textarea id="booking-notes" class="form-control" rows="2" placeholder="Ví dụ: Cắt phom Teddy, bé sợ máy sấy to tiếng..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="quick-action-btn btn-outline" onclick="app.closeModal('booking-modal')">Hủy</button>
+          <button type="submit" class="quick-action-btn btn-primary">Xác Nhận Đặt Lịch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Reschedule Appointment -->
+  <div id="reschedule-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Đổi Lịch Hẹn</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('reschedule-modal')">×</button>
+      </div>
+      <form onsubmit="app.handleRescheduleSubmit(event)">
+        <input type="hidden" id="reschedule-apt-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ngày Hẹn Mới (*):</label>
+            <input type="date" id="reschedule-date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Giờ Hẹn Mới (*):</label>
+            <input type="time" id="reschedule-time" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="quick-action-btn btn-outline" onclick="app.closeModal('reschedule-modal')">Hủy</button>
+          <button type="submit" class="quick-action-btn btn-primary">Cập Nhật Giờ Hẹn</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Pet -->
+  <div id="add-pet-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Thêm Thú Cưng Mới</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('add-pet-modal')">×</button>
+      </div>
+      <form onsubmit="app.handleAddPetSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tên Thú Cưng (*):</label>
+            <input type="text" id="pet-name-input" class="form-control" placeholder="Bim Bim, Miu Miu..." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Chủ Nuôi (*):</label>
+            <select id="pet-owner-select" class="form-control owner-select" required></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Loài:</label>
+            <select id="pet-species-select" class="form-control">
+              <option value="Chó">Chó</option>
+              <option value="Mèo">Mèo</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Giống Loài:</label>
+            <input type="text" id="pet-breed-input" class="form-control" placeholder="Poodle, Golden, Mèo Anh...">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tuổi (Tháng):</label>
+            <input type="number" id="pet-age-input" class="form-control" value="12">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cân Nặng (kg):</label>
+            <input type="number" step="0.1" id="pet-weight-input" class="form-control" value="3.5">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Giới Tính:</label>
+          <select id="pet-gender-select" class="form-control">
+            <option value="Đực">Đực</option>
+            <option value="Cái">Cái</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tiền Sử Dị Ứng / Da Nhạy Cảm:</label>
+          <input type="text" id="pet-allergies-input" class="form-control" placeholder="Ví dụ: Dị ứng xà phòng cồn, hoặc 'Không có'">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Link Ảnh Đại Diện (Tùy chọn):</label>
+          <input type="url" id="pet-avatar-input" class="form-control" placeholder="https://...">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="quick-action-btn btn-outline" onclick="app.closeModal('add-pet-modal')">Đóng</button>
+          <button type="submit" class="quick-action-btn btn-primary">Lưu Thú Cưng</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Owner -->
+  <div id="add-owner-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Thêm Chủ Nuôi Mới</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('add-owner-modal')">×</button>
+      </div>
+      <form onsubmit="app.handleAddOwnerSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Họ & Tên (*):</label>
+          <input type="text" id="owner-name-input" class="form-control" placeholder="Nguyễn Văn A..." required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Số Điện Thoại (*):</label>
+            <input type="tel" id="owner-phone-input" class="form-control" placeholder="0987..." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email:</label>
+            <input type="email" id="owner-email-input" class="form-control" placeholder="example@gmail.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Địa Chỉ:</label>
+          <input type="text" id="owner-address-input" class="form-control" placeholder="TP. Thái Nguyên...">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="quick-action-btn btn-outline" onclick="app.closeModal('add-owner-modal')">Hủy</button>
+          <button type="submit" class="quick-action-btn btn-primary">Lưu Chủ Nuôi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Care Record Entry -->
+  <div id="care-record-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Ghi Nhận Hồ Sơ Chăm Sóc & Da Lông</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('care-record-modal')">×</button>
+      </div>
+      <form onsubmit="app.handleCareRecordSubmit(event)">
+        <input type="hidden" id="care-pet-id">
+        <input type="hidden" id="care-apt-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ngày Thực Hiện (*):</label>
+            <input type="date" id="care-date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cân Nặng Cân Lại (kg):</label>
+            <input type="number" step="0.1" id="care-weight" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tình Trạng Lông & Da (*):</label>
+          <input type="text" id="care-condition" class="form-control" value="Bình thường, sạch sẽ, không có ve rận" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Hành Vi Lúc Chăm Sóc:</label>
+            <input type="text" id="care-behavior" class="form-control" value="Ngoan ngoãn, hợp tác tốt">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sản Phẩm Đã Dùng:</label>
+            <input type="text" id="care-products" class="form-control" value="Sữa tắm thảo mộc dưỡng lông">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ghi Chú Nhân Viên Kỹ Thuật:</label>
+          <textarea id="care-staff-notes" class="form-control" rows="2" placeholder="Tuyến hôi đã vắt sạch, tai hơi bẩn đã rửa..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hướng Dẫn Khách Hàng Chăm Sóc Tại Nhà:</label>
+          <textarea id="care-instructions" class="form-control" rows="2" placeholder="Chải lông hàng ngày, tránh cho bé ra chỗ ẩm ướt..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="quick-action-btn btn-outline" onclick="app.closeModal('care-record-modal')">Hủy</button>
+          <button type="submit" class="quick-action-btn btn-primary">Lưu Hồ Sơ Chăm Sóc</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Vaccine Reminder -->
+  <div id="add-vaccine-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Thêm Lịch Nhắc Tiêm / Tẩy Giun</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('add-vaccine-modal')">×</button>
+      </div>
+      <form onsubmit="app.handleAddVaccineSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Thú Cưng (*):</label>
+          <select id="vac-pet-id" class="form-control pet-select" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tên Vaccine / Mũi Phòng Bệnh (*):</label>
+          <input type="text" id="vac-name" class="form-control" placeholder="Vaccine phòng 7 bệnh, Vaccine dại, Tẩy giun..." required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Mũi Số:</label>
+            <input type="number" id="vac-dose" class="form-control" value="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ngày Tiêm Trước (Nếu có):</label>
+            <input type="date" id="vac-last-date" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ngày Đến Hạn Tiêm Nhắc (*):</label>
+          <input type="date" id="vac-due-date" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ghi Chú:</label>
+          <input type="text" id="vac-notes" class="form-control" placeholder="Tiêm nhắc định kỳ hàng năm">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="quick-action-btn btn-outline" onclick="app.closeModal('add-vaccine-modal')">Hủy</button>
+          <button type="submit" class="quick-action-btn btn-primary">Lưu Lịch Tiêm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Create Invoice -->
+  <div id="create-invoice-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Lập Hóa Đơn Thanh Toán</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('create-invoice-modal')">×</button>
+      </div>
+      <form onsubmit="app.handleCreateInvoiceSubmit(event)">
+        <input type="hidden" id="inv-apt-id">
+        <input type="hidden" id="inv-owner-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tổng Tiền Dịch Vụ (*):</label>
+            <input type="number" id="inv-total" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Giảm Giá / Khuyến Mãi:</label>
+            <input type="number" id="inv-discount" class="form-control" value="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Phương Thức Thanh Toán:</label>
+            <select id="inv-method" class="form-control">
+              <option value="Tiền mặt">Tiền mặt</option>
+              <option value="Chuyển khoản QR">Chuyển khoản QR</option>
+              <option value="Thẻ tín dụng">Thẻ tín dụng</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Trạng Thái:</label>
+            <select id="inv-status" class="form-control">
+              <option value="paid">Đã thanh toán</option>
+              <option value="pending">Chờ thanh toán</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ghi Chú Hóa Đơn:</label>
+          <input type="text" id="inv-notes" class="form-control" placeholder="Dịch vụ hoàn tất tốt đẹp">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="quick-action-btn btn-outline" onclick="app.closeModal('create-invoice-modal')">Hủy</button>
+          <button type="submit" class="quick-action-btn btn-primary">Xác Nhận Xuất Hóa Đơn</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: View & Print Invoice -->
+  <div id="invoice-detail-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>Chi Tiết Hóa Đơn</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('invoice-detail-modal')">×</button>
+      </div>
+      <div id="invoice-print-area" class="invoice-print-card">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="quick-action-btn btn-outline" onclick="window.print()">
+          In Hóa Đơn
+        </button>
+        <button type="button" class="quick-action-btn btn-primary" onclick="app.closeModal('invoice-detail-modal')">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: AI Reminder Message Generator (Feature 1) -->
+  <div id="ai-reminder-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3>AI Soạn Tin Nhắn Nhắc Lịch</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('ai-reminder-modal')">×</button>
+      </div>
+      <input type="hidden" id="ai-rem-type">
+      <input type="hidden" id="ai-rem-target-id">
+
+      <div class="form-row" style="margin-bottom: 14px;">
+        <div class="form-group">
+          <label class="form-label">Phong Cách Giọng Văn (Tone):</label>
+          <select id="ai-rem-tone" class="form-control" onchange="app.generateAiReminder()">
+            <option value="friendly">Thân thiện, ấm áp (Mặc định)</option>
+            <option value="formal">Trang trọng, lịch sự VIP</option>
+            <option value="cute_fun">Dễ thương, phong cách cưng cún mèo</option>
+            <option value="sms_short">Ngắn gọn tiết kiệm ký tự SMS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Lời Dặn Bổ Sung Của Tiệm:</label>
+          <input type="text" id="ai-rem-note" class="form-control" placeholder="Ví dụ: Nhịn ăn trước 4 tiếng..." onchange="app.generateAiReminder()">
+        </div>
+      </div>
+
+      <div id="ai-rem-output" style="margin-top: 10px;">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="quick-action-btn btn-outline" onclick="app.generateAiReminder()">
+          Soạn Lại
+        </button>
+        <button type="button" class="quick-action-btn btn-primary" onclick="app.closeModal('ai-reminder-modal')">
+          Xong
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: PetCare AI Pro Authentication (Login & Register) -->
+  <div id="login-modal" class="modal-overlay">
+    <div class="login-modal-card">
+      <!-- Gradient Header with Paw Orb and Close Button -->
+      <div class="login-header-gradient">
+        <button type="button" class="login-close-circle" onclick="app.closeModal('login-modal')" aria-label="Đóng">&times;</button>
+
+        <div class="login-brand-orb">
+          <svg class="login-paw-svg" width="32" height="32" viewBox="0 0 24 24" fill="#ffffff" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; max-width: 32px; max-height: 32px; display: block; margin: auto;">
+            <ellipse cx="12" cy="15.8" rx="4.5" ry="3.8" />
+            <circle cx="6.5" cy="10.2" r="2.2" />
+            <circle cx="10" cy="6.8" r="2.2" />
+            <circle cx="14" cy="6.8" r="2.2" />
+            <circle cx="17.5" cy="10.2" r="2.2" />
+          </svg>
+        </div>
+
+        <h2 id="auth-modal-title" class="login-modal-title">PetCare AI Pro</h2>
+        <p id="auth-modal-subtitle" class="login-modal-subtitle">Hệ Thống Quản Lý Thú Cưng Tích Hợp AI</p>
+      </div>
+
+      <!-- VIEW 1: ĐĂNG NHẬP -->
+      <div id="auth-view-login" class="login-form-body">
+        <form onsubmit="app.handleLoginSubmit(event)">
+          <div class="form-group">
+            <label class="login-input-label" for="login-username">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Tên đăng nhập / Username:
+            </label>
+            <div class="login-input-wrap">
+              <input type="text" id="login-username" class="login-input-field" autocomplete="username" required placeholder="Nhập tên đăng nhập...">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="login-input-label" for="login-password">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Mật khẩu / Password:
+            </label>
+            <div class="login-input-wrap">
+              <input type="password" id="login-password" class="login-input-field" autocomplete="current-password" required placeholder="Nhập mật khẩu...">
+              <button type="button" class="login-eye-btn" onclick="app.togglePasswordVisibility('login-password')" aria-label="Hiện/ẩn mật khẩu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="login-options-row">
+            <label class="login-remember-label">
+              <input type="checkbox" id="login-remember" checked>
+              <span>Ghi nhớ đăng nhập</span>
+            </label>
+            <span class="jwt-secure-text">Chuẩn bảo mật JWT</span>
+          </div>
+
+          <button type="submit" class="login-submit-btn">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Đăng Nhập Hệ Thống</span>
+          </button>
+
+          <div class="login-footer-links">
+            <span style="font-size: 0.8rem; color: #64748b;">Hệ thống bảo mật nội bộ</span>
+            <a onclick="alert('Vui lòng liên hệ Quản trị viên (Admin) của hệ thống để được cấp tài khoản hoặc đặt lại mật khẩu.')" class="forgot-pwd-link" style="cursor: pointer;">
+              Quên mật khẩu?
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- VIEW 2: ADMIN CẤP TÀI KHOẢN CHO LỄ TÂN & KTV -->
+      <div id="auth-view-register" class="login-form-body" style="display: none;">
+        <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 6px 10px; margin-bottom: 10px; font-size: 0.76rem; color: #065f46; display: flex; align-items: center; gap: 6px;">
+          
+          <span>Admin cấp tài khoản cho <strong>Lễ tân</strong> và <strong>Kỹ thuật viên (KTV)</strong></span>
+        </div>
+
+        <form onsubmit="app.handleRegisterSubmit(event)">
+          <div class="form-group">
+            <label class="login-input-label" for="reg-fullname">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Họ và tên nhân viên (*):
+            </label>
+            <div class="login-input-wrap">
+              <input type="text" id="reg-fullname" class="login-input-field" required placeholder="Ví dụ: Hoàng Thu Hằng">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label class="login-input-label" for="reg-username">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                Username (*):
+              </label>
+              <div class="login-input-wrap">
+                <input type="text" id="reg-username" class="login-input-field" required placeholder="vd: hang_letan">
+              </div>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="login-input-label" for="reg-role">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+                Vai trò (*):
+              </label>
+              <div class="login-input-wrap">
+                <select id="reg-role" class="login-input-field">
+                  <option value="receptionist">Lễ tân</option>
+                  <option value="staff">Kỹ thuật viên (KTV)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="login-input-label" for="reg-email">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Email (Tùy chọn):
+            </label>
+            <div class="login-input-wrap">
+              <input type="email" id="reg-email" class="login-input-field" placeholder="nhanvien@petcare.vn">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label class="login-input-label" for="reg-password">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Mật khẩu (*):
+              </label>
+              <div class="login-input-wrap">
+                <input type="password" id="reg-password" class="login-input-field" required placeholder="Mật khẩu...">
+              </div>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="login-input-label" for="reg-confirm-password">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1-1l2 2"/><path d="M15 5l4 4L7.5 20.5 2 22l1.5-5.5L15 5z"/></svg>
+                Xác nhận (*):
+              </label>
+              <div class="login-input-wrap">
+                <input type="password" id="reg-confirm-password" class="login-input-field" required placeholder="Nhập lại...">
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="login-submit-btn register-btn" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+            <span>Cấp Tài Khoản Cho Nhân Viên</span>
+          </button>
+
+          <div class="login-footer-links" style="justify-content: center; gap: 8px;">
+            <span>Đã có tài khoản nhân viên? <a onclick="app.switchAuthView('login')">Đăng nhập ngay</a></span>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL: VIP DIGITAL CHECK-IN PASS ================= -->
+  <div id="portal-qr-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card vip-qr-modal-card">
+      <div class="vip-qr-modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          
+          <div>
+            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #0f172a;">THẺ CHECK-IN VIP PETCARE</h3>
+            <span style="font-size: 0.76rem; color: #64748b; font-weight: 600;">PETCARE LUXURY DIGITAL PASS</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="app.closePortalQrModal()">&times;</button>
+      </div>
+
+      <div class="vip-qr-modal-body">
+        <div class="vip-qr-pass-container">
+          <div class="vip-qr-badge" id="modal-qr-tier-badge">DIAMOND VIP</div>
+          <div class="vip-qr-holder-name" id="modal-qr-owner-name">NGUYỄN THỊ BÍCH TRÂM</div>
+          <div class="vip-qr-phone" id="modal-qr-phone">0987 654 321</div>
+          
+          <!-- High-tech QR Code Box -->
+          <div class="vip-qr-image-wrapper">
+            <div class="vip-qr-scanner-line"></div>
+            <svg class="vip-qr-svg" viewBox="0 0 160 160" width="160" height="160">
+              <rect width="160" height="160" fill="#ffffff" rx="12"/>
+              <rect x="15" y="15" width="40" height="40" rx="6" fill="#0f172a"/>
+              <rect x="23" y="23" width="24" height="24" rx="3" fill="#ffffff"/>
+              <rect x="28" y="28" width="14" height="14" rx="2" fill="#0284c7"/>
+              <rect x="105" y="15" width="40" height="40" rx="6" fill="#0f172a"/>
+              <rect x="113" y="23" width="24" height="24" rx="3" fill="#ffffff"/>
+              <rect x="118" y="28" width="14" height="14" rx="2" fill="#0284c7"/>
+              <rect x="15" y="105" width="40" height="40" rx="6" fill="#0f172a"/>
+              <rect x="23" y="113" width="24" height="24" rx="3" fill="#ffffff"/>
+              <rect x="28" y="118" width="14" height="14" rx="2" fill="#0284c7"/>
+              <rect x="65" y="18" width="12" height="12" rx="2" fill="#0f172a"/>
+              <rect x="85" y="18" width="10" height="10" rx="2" fill="#0284c7"/>
+              <rect x="65" y="38" width="10" height="10" rx="2" fill="#0f172a"/>
+              <rect x="80" y="35" width="15" height="15" rx="3" fill="#0f172a"/>
+              <rect x="20" y="65" width="12" height="12" rx="2" fill="#0f172a"/>
+              <rect x="40" y="70" width="10" height="10" rx="2" fill="#0284c7"/>
+              <rect x="58" y="58" width="16" height="16" rx="3" fill="#0284c7"/>
+              <rect x="82" y="65" width="14" height="14" rx="3" fill="#0f172a"/>
+              <rect x="105" y="65" width="10" height="10" rx="2" fill="#0284c7"/>
+              <rect x="125" y="70" width="15" height="15" rx="3" fill="#0f172a"/>
+              <rect x="65" y="90" width="15" height="15" rx="3" fill="#0f172a"/>
+              <rect x="88" y="90" width="12" height="12" rx="2" fill="#0284c7"/>
+              <rect x="65" y="115" width="12" height="12" rx="2" fill="#0284c7"/>
+              <rect x="85" y="110" width="15" height="15" rx="3" fill="#0f172a"/>
+              <rect x="110" y="105" width="12" height="12" rx="2" fill="#0f172a"/>
+              <rect x="130" y="115" width="12" height="12" rx="2" fill="#0284c7"/>
+              <rect x="115" y="130" width="15" height="15" rx="3" fill="#0f172a"/>
+              <circle cx="80" cy="80" r="14" fill="#ffffff" stroke="#0284c7" stroke-width="2"/>
+              
+            </svg>
+          </div>
+
+          <div class="vip-qr-instruction">
+            Quét mã này tại Kiosk tự phục vụ hoặc Quầy Lễ Tân khi đến phòng khám để check-in tức thì và nhận phòng chờ riêng.
+          </div>
+        </div>
+      </div>
+
+      <div class="vip-qr-modal-footer">
+        <button type="button" class="quick-action-btn btn-primary" onclick="app.downloadOrShareVipPass()" style="width: 100%; justify-content: center;">
+          Lưu Thẻ VIP Vào Điện Thoại
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="floating-ai-fab" onclick="app.navigate('ai-studio')" title="Trợ lý Bác sĩ Thú y AI 24/7">
+    <div class="fab-pulse"></div>
+    <span class="fab-icon" style="font-weight:700; font-size: 0.8rem;">AI</span>
+    <span class="fab-badge">AI</span>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+
+  <!-- Scripts -->
+  <script src="./js/api.js?v=16.0"></script>
+  <script src="./js/state.js?v=16.0"></script>
+  <script src="./js/components.js?v=16.0"></script>
+  <script src="./js/app.js?v=16.0"></script>
+</body>
+</html>
+
