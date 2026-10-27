@@ -13,6 +13,11 @@ if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
+backend_dir = os.path.join(os.path.dirname(__file__), "backend")
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
+
 # Cổng mặc định là 3000 (khớp với tab đang mở trên trình duyệt của bạn)
 DEFAULT_PORT = 3000
 ALT_PORT = 8000
