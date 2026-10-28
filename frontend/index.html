@@ -217,6 +217,13 @@
                             d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg> Cổng Khách Hàng
                 </li>
+                <li class="nav-item" data-role="ADMIN" onclick="openUserManagementModal()" id="nav-user-management" title="Cấp và quản lý tài khoản Staff, Nhân viên">
+                    <svg class="w-4 h-4 inline-block mr-1 text-indigo-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg> Quản Lý Tài Khoản
+                </li>
             </ul>
 
             <!-- 2. Customer Public Navigation Menu (Giao diện mặc định dành riêng cho Khách Hàng) -->
@@ -3221,14 +3228,20 @@
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632zM17.25 15.75l2.25 2.25 3-3" />
                                 </svg>
-                                Loại tài khoản / Vai trò (*):
+                                Loại tài khoản đăng ký:
                             </label>
-                            <select id="reg-role" class="form-control"
-                                style="font-weight: 700; color: #34d399; width: 100%;">
-                                <option value="CUSTOMER" selected>🐾 Khách Hàng (Chủ thú cưng / VIP)</option>
-                                <option value="STAFF">✂️ Kỹ thuật viên (Groomer / Staff)</option>
-                                <option value="RECEPTIONIST">🎧 Lễ tân (Receptionist)</option>
-                            </select>
+                            <input type="hidden" id="reg-role" value="CUSTOMER">
+                            <div style="background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;">
+                                <span style="font-weight: 700; color: #34d399; display: flex; align-items: center; gap: 8px; font-size: 0.92rem;">
+                                    🐾 Khách Hàng (Chủ thú cưng / VIP)
+                                </span>
+                                <span style="font-size: 0.75rem; color: #94a3b8; background: rgba(255,255,255,0.06); padding: 3px 8px; border-radius: 4px;">
+                                    Mặc định
+                                </span>
+                            </div>
+                            <small style="color: #94a3b8; font-size: 0.76rem; margin-top: 5px; display: block; line-height: 1.4;">
+                                <i class="fa-solid fa-shield-halved" style="color: #818cf8;"></i> <em>Lưu ý: Tài khoản Nhân viên (Staff, Kỹ thuật viên) & Lễ tân do Quản trị viên (Admin) cấp riêng.</em>
+                            </small>
                         </div>
 
                         <div class="form-row">
@@ -3509,65 +3522,136 @@
             <div class="modal-body" style="padding: 1.5rem;">
                 <!-- Form cấp tài khoản mới -->
                 <div class="glass-panel"
-                    style="padding: 1.25rem; margin-bottom: 1.5rem; border: 1px solid rgba(99, 102, 241, 0.3); background: rgba(99, 102, 241, 0.05);">
+                    style="padding: 1.25rem; margin-bottom: 1.5rem; border: 1px solid rgba(99, 102, 241, 0.3); background: rgba(99, 102, 241, 0.05); overflow: visible;">
                     <h4
-                        style="font-size: 0.95rem; font-weight: 800; color: #818cf8; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-user-plus"></i> Cấp Tài Khoản Mới (Khách Hàng / Lễ Tân / Kỹ Thuật Viên)
+                        style="font-size: 0.95rem; font-weight: 800; color: #818cf8; margin-bottom: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-user-plus"></i> Cấp Tài Khoản Mới (Kỹ Thuật Viên / Lễ Tân / Nhân Viên)
                     </h4>
                     <form onsubmit="handleAdminCreateUser(event)"
-                        style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        style="display: flex; flex-direction: column; gap: 0.85rem;">
+                        <!-- Hàng 1: Họ tên + Tên đăng nhập -->
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Họ và tên (*):</label>
+                                <label class="form-label"><i class="fa-solid fa-user" style="color: #818cf8;"></i> Họ và tên nhân viên (*):</label>
                                 <input type="text" id="admin-create-fullname" class="form-control"
-                                    placeholder="Vd: Hoàng Thị Yến" required>
+                                    placeholder="Vd: Nguyễn Văn A (Kỹ thuật viên)" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Tên đăng nhập (*):</label>
+                                <label class="form-label"><i class="fa-solid fa-id-badge" style="color: #818cf8;"></i> Tên đăng nhập (*):</label>
                                 <input type="text" id="admin-create-username" class="form-control"
-                                    placeholder="Vd: yen_hoang" required>
+                                    placeholder="Vd: staff_nguyenvana" required autocomplete="new-username">
                             </div>
+                        </div>
+
+                        <!-- Hàng 2: Vai trò + SĐT -->
+                        <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Cấp Vai Trò (*):</label>
+                                <label class="form-label"><i class="fa-solid fa-shield-halved" style="color: #818cf8;"></i> Cấp Vai Trò (*):</label>
                                 <select id="admin-create-role" class="form-control"
-                                    style="font-weight: 700; color: #34d399;">
-                                    <option value="CUSTOMER" selected>🐾 Khách Hàng (Customer)</option>
-                                    <option value="STAFF">✂️ Kỹ Thuật Viên (Staff/Groomer)</option>
-                                    <option value="RECEPTIONIST">🎧 Lễ Tân (Receptionist)</option>
+                                    style="font-weight: 700; color: #818cf8; width: 100%;">
+                                    <option value="STAFF" selected>✂️ Kỹ Thuật Viên / Groomer (Staff)</option>
+                                    <option value="RECEPTIONIST">🎧 Lễ Tân / Tiếp Đón (Receptionist)</option>
                                     <option value="ADMIN">👑 Quản Trị Viên (Admin)</option>
+                                    <option value="CUSTOMER">🐾 Khách Hàng (Customer)</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Số điện thoại:</label>
+                                <label class="form-label"><i class="fa-solid fa-phone" style="color: #818cf8;"></i> Số điện thoại:</label>
                                 <input type="tel" id="admin-create-phone" class="form-control" placeholder="09xxxxxxxx">
                             </div>
+                        </div>
+
+                        <!-- Hàng 3: Email + Ghi chú quyền hạn -->
+                        <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Email:</label>
+                                <label class="form-label"><i class="fa-solid fa-envelope" style="color: #818cf8;"></i> Email làm việc (Tùy chọn):</label>
                                 <input type="email" id="admin-create-email" class="form-control"
-                                    placeholder="email@gmail.com">
+                                    placeholder="staff@petcare.vn">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Mật khẩu khởi tạo (*):</label>
-                                <input type="password" id="admin-create-password" class="form-control"
-                                    placeholder="Ít nhất 6 ký tự..." required>
+                                <label class="form-label"><i class="fa-solid fa-circle-check" style="color: #34d399;"></i> Trạng thái khởi tạo:</label>
+                                <div style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 8px;">
+                                    <span style="color: #34d399; font-weight: 700; font-size: 0.88rem;"><i class="fa-solid fa-bolt"></i> Kích hoạt hoạt động ngay khi tạo</span>
+                                </div>
                             </div>
                         </div>
-                        <button type="submit" id="admin-create-submit-btn" class="btn btn-primary btn-sm"
-                            style="align-self: flex-end; padding: 8px 18px;">
-                            <i class="fa-solid fa-plus"></i> Tạo & Cấp Tài Khoản Ngay
-                        </button>
+
+                        <!-- Hàng 4: Mật khẩu + Xác nhận lại mật khẩu -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label"><i class="fa-solid fa-lock" style="color: #818cf8;"></i> Mật khẩu khởi tạo (*):</label>
+                                <div style="position: relative; display: flex; align-items: center; width: 100%;">
+                                    <input type="password" id="admin-create-password" class="form-control"
+                                        placeholder="Ít nhất 6 ký tự..." required autocomplete="new-password"
+                                        style="padding-right: 2.8rem; width: 100%;">
+                                    <button type="button" class="password-toggle-btn"
+                                        onclick="togglePasswordVisibility('admin-create-password', 'admin-pwd-icon')"
+                                        title="Ẩn/Hiện">
+                                        <span id="admin-pwd-icon"
+                                            style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;">
+                                            <svg style="width:16px;height:16px;display:block;" fill="none"
+                                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"><i class="fa-solid fa-shield-halved" style="color: #818cf8;"></i> Xác nhận lại mật khẩu (*):</label>
+                                <div style="position: relative; display: flex; align-items: center; width: 100%;">
+                                    <input type="password" id="admin-create-confirm-password" class="form-control"
+                                        placeholder="Nhập lại chính xác mật khẩu..." required autocomplete="new-password"
+                                        style="padding-right: 2.8rem; width: 100%;">
+                                    <button type="button" class="password-toggle-btn"
+                                        onclick="togglePasswordVisibility('admin-create-confirm-password', 'admin-confirm-pwd-icon')"
+                                        title="Ẩn/Hiện">
+                                        <span id="admin-confirm-pwd-icon"
+                                            style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;">
+                                            <svg style="width:16px;height:16px;display:block;" fill="none"
+                                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hàng Nút Xác nhận cấp tài khoản -->
+                        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08);">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-circle-info"></i> Hệ thống sẽ yêu cầu xác nhận trước khi lưu</span>
+                            <button type="submit" id="admin-create-submit-btn" class="btn btn-primary"
+                                style="padding: 10px 24px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-user-check"></i> Xác Nhận Cấp Tài Khoản
+                            </button>
+                        </div>
                     </form>
                 </div>
 
                 <!-- Bảng danh sách tài khoản -->
-                <div class="section-header" style="margin-bottom: 0.8rem;">
+                <div class="section-header" style="margin-bottom: 0.8rem; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center;">
                     <div class="section-title" style="font-size: 0.95rem;">
                         <i class="fa-solid fa-list-check"></i> Danh Sách Tài Khoản Hệ Thống
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="loadAllUsersForAdmin()"><i
-                            class="fa-solid fa-rotate"></i> Làm mới</button>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <input type="text" id="admin-user-search" class="form-control" placeholder="🔍 Tìm theo tên, username..." oninput="filterAdminUsers()" style="max-width: 200px; font-size: 0.82rem; padding: 5px 10px;">
+                        <select id="admin-user-role-filter" class="form-control" onchange="filterAdminUsers()" style="max-width: 170px; font-size: 0.82rem; padding: 5px 10px; color: #818cf8; font-weight: 600;">
+                            <option value="">Tất cả vai trò</option>
+                            <option value="STAFF">✂️ Kỹ Thuật Viên (Staff)</option>
+                            <option value="RECEPTIONIST">🎧 Lễ Tân</option>
+                            <option value="ADMIN">👑 Quản Trị Viên</option>
+                            <option value="CUSTOMER">🐾 Khách Hàng</option>
+                        </select>
+                        <button class="btn btn-secondary btn-sm" onclick="loadAllUsersForAdmin()"><i
+                                class="fa-solid fa-rotate"></i> Làm mới</button>
+                    </div>
                 </div>
                 <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
                     <table class="data-table">

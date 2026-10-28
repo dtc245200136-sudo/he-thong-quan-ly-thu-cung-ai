@@ -54,9 +54,9 @@ def register(reg_data: RegisterRequest, db: Session = Depends(get_db)):
         if email_existing:
             raise HTTPException(status_code=400, detail=f"Email '{reg_data.email}' đã được đăng ký tài khoản.")
 
-    # Validate role (Cho phép CUSTOMER, STAFF, RECEPTIONIST. Mặc định là CUSTOMER nếu đăng ký công khai)
-    allowed_roles = [UserRole.CUSTOMER.value, UserRole.STAFF.value, UserRole.RECEPTIONIST.value]
-    role = reg_data.role if reg_data.role in allowed_roles else UserRole.CUSTOMER.value
+    # Đăng ký công khai từ bên ngoài chỉ dành cho Khách Hàng (CUSTOMER).
+    # Tài khoản Nhân viên (Staff, Receptionist) và Quản trị viên (Admin) chỉ do Quản trị viên (Admin) cấp trong hệ thống.
+    role = UserRole.CUSTOMER.value
 
     new_user = User(
         username=username,
@@ -166,6 +166,17 @@ def create_user(
     if existing:
         raise HTTPException(status_code=400, detail=f"Tên đăng nhập '{user_data.username}' đã tồn tại")
     
+    # Validate role
+    valid_roles = [UserRole.ADMIN.value, UserRole.RECEPTIONIST.value, UserRole.STAFF.value, UserRole.CUSTOMER.value]
+    if user_data.role not in valid_roles:
+        raise HTTPException(status_code=400, detail=f"Vai trò '{user_data.role}' không hợp lệ.")
+
+    # Check email duplicate if provided
+    if user_data.email and user_data.email.strip():
+        email_existing = db.query(User).filter(User.email == user_data.email.strip()).first()
+        if email_existing:
+            raise HTTPException(status_code=400, detail=f"Email '{user_data.email}' đã được đăng ký cho tài khoản khác.")
+
     new_user = User(
         username=user_data.username.strip(),
         hashed_password=get_password_hash(user_data.password),

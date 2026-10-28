@@ -150,7 +150,7 @@ async function handleManualRegister(event) {
     const username = (document.getElementById('reg-username')?.value || '').trim();
     const phone = (document.getElementById('reg-phone')?.value || '').trim();
     const email = (document.getElementById('reg-email')?.value || '').trim();
-    const role = document.getElementById('reg-role')?.value || 'STAFF';
+    const role = document.getElementById('reg-role')?.value || 'CUSTOMER';
     const password = document.getElementById('reg-password')?.value || '';
     const confirmPassword = document.getElementById('reg-confirm-password')?.value || '';
     const submitBtn = document.getElementById('reg-submit-btn');
@@ -696,62 +696,83 @@ function openUserManagementModal() {
     loadAllUsersForAdmin();
 }
 
+let _cachedAdminUsers = [];
+
 async function loadAllUsersForAdmin() {
     const tbody = document.getElementById('admin-users-table-body');
     if (!tbody) return;
 
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #818cf8;"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p style="margin-top: 8px;">Đang tải danh sách người dùng...</p></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #818cf8;"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p style="margin-top: 8px;">Đang tải danh sách tài khoản...</p></td></tr>`;
 
     try {
         const users = await apiCall('/auth/users');
-        if (!users || users.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Chưa có tài khoản nào.</td></tr>`;
-            return;
-        }
-
-        tbody.innerHTML = users.map(u => {
-            const roleBadgeClass = u.role.toLowerCase();
-            let roleIcon = 'fa-user-shield';
-            let roleLabel = 'Admin';
-            if (u.role === 'RECEPTIONIST') { roleIcon = 'fa-headset'; roleLabel = 'Lễ tân'; }
-            if (u.role === 'STAFF') { roleIcon = 'fa-scissors'; roleLabel = 'Kỹ thuật viên'; }
-            if (u.role === 'CUSTOMER') { roleIcon = 'fa-paw'; roleLabel = 'Khách hàng'; }
-
-            const statusBadge = u.is_active 
-                ? `<span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Hoạt động</span>`
-                : `<span class="badge badge-danger"><i class="fa-solid fa-ban"></i> Đang khóa</span>`;
-
-            return `
-                <tr>
-                    <td>
-                        <strong style="color: #fff;">${u.full_name}</strong>
-                        <div style="font-size: 0.78rem; color: var(--text-dim); font-family: monospace;">@${u.username}</div>
-                    </td>
-                    <td>
-                        <div><i class="fa-solid fa-phone" style="font-size: 0.75rem; color: var(--text-dim);"></i> ${u.phone || 'Chưa cập nhật'}</div>
-                        <div style="font-size: 0.78rem; color: var(--text-muted);">${u.email || ''}</div>
-                    </td>
-                    <td>
-                        <select onchange="handleAdminChangeRole(${u.id}, this.value)" class="form-control" style="padding: 4px 8px; font-size: 0.8rem; width: auto; display: inline-block;">
-                            <option value="CUSTOMER" ${u.role === 'CUSTOMER' ? 'selected' : ''}>🐾 Khách Hàng</option>
-                            <option value="STAFF" ${u.role === 'STAFF' ? 'selected' : ''}>✂️ Kỹ Thuật Viên</option>
-                            <option value="RECEPTIONIST" ${u.role === 'RECEPTIONIST' ? 'selected' : ''}>🎧 Lễ Tân</option>
-                            <option value="ADMIN" ${u.role === 'ADMIN' ? 'selected' : ''}>👑 Quản Trị Viên</option>
-                        </select>
-                    </td>
-                    <td>${statusBadge}</td>
-                    <td style="text-align: right;">
-                        <button class="btn btn-secondary btn-sm" onclick="handleAdminToggleStatus(${u.id})" title="${u.is_active ? 'Khóa tài khoản' : 'Mở khóa'}">
-                            <i class="fa-solid ${u.is_active ? 'fa-lock' : 'fa-lock-open'}"></i> ${u.is_active ? 'Khóa' : 'Mở'}
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-
+        _cachedAdminUsers = users || [];
+        filterAdminUsers();
     } catch (e) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #fb7185; padding: 1.5rem;">Lỗi tải dữ liệu: ${e.message}</td></tr>`;
     }
+}
+
+function filterAdminUsers() {
+    const search = (document.getElementById('admin-user-search')?.value || '').toLowerCase().trim();
+    const roleFilter = document.getElementById('admin-user-role-filter')?.value || '';
+
+    let filtered = _cachedAdminUsers;
+    if (roleFilter) {
+        filtered = filtered.filter(u => u.role === roleFilter);
+    }
+    if (search) {
+        filtered = filtered.filter(u => 
+            (u.full_name && u.full_name.toLowerCase().includes(search)) ||
+            (u.username && u.username.toLowerCase().includes(search)) ||
+            (u.phone && u.phone.includes(search)) ||
+            (u.email && u.email.toLowerCase().includes(search))
+        );
+    }
+    renderAdminUsersTable(filtered);
+}
+
+function renderAdminUsersTable(users) {
+    const tbody = document.getElementById('admin-users-table-body');
+    if (!tbody) return;
+
+    if (!users || users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 1.8rem; color: var(--text-muted);"><i class="fa-solid fa-circle-info" style="margin-right: 6px;"></i> Không tìm thấy tài khoản người dùng phù hợp.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = users.map(u => {
+        const statusBadge = u.is_active 
+            ? `<span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Hoạt động</span>`
+            : `<span class="badge badge-danger"><i class="fa-solid fa-ban"></i> Đang khóa</span>`;
+
+        return `
+            <tr>
+                <td>
+                    <strong style="color: #fff;">${u.full_name}</strong>
+                    <div style="font-size: 0.78rem; color: var(--text-dim); font-family: monospace;">@${u.username}</div>
+                </td>
+                <td>
+                    <div><i class="fa-solid fa-phone" style="font-size: 0.75rem; color: var(--text-dim);"></i> ${u.phone || 'Chưa cập nhật'}</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">${u.email || ''}</div>
+                </td>
+                <td>
+                    <select onchange="handleAdminChangeRole(${u.id}, this.value)" class="form-control" style="padding: 4px 8px; font-size: 0.8rem; width: auto; display: inline-block; font-weight: 600;">
+                        <option value="STAFF" ${u.role === 'STAFF' ? 'selected' : ''}>✂️ Kỹ Thuật Viên (Staff)</option>
+                        <option value="RECEPTIONIST" ${u.role === 'RECEPTIONIST' ? 'selected' : ''}>🎧 Lễ Tân (Nhân viên)</option>
+                        <option value="ADMIN" ${u.role === 'ADMIN' ? 'selected' : ''}>👑 Quản Trị Viên (Admin)</option>
+                        <option value="CUSTOMER" ${u.role === 'CUSTOMER' ? 'selected' : ''}>🐾 Khách Hàng</option>
+                    </select>
+                </td>
+                <td>${statusBadge}</td>
+                <td style="text-align: right;">
+                    <button class="btn btn-secondary btn-sm" onclick="handleAdminToggleStatus(${u.id})" title="${u.is_active ? 'Khóa tài khoản' : 'Mở khóa'}">
+                        <i class="fa-solid ${u.is_active ? 'fa-lock' : 'fa-lock-open'}"></i> ${u.is_active ? 'Khóa' : 'Mở'}
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
 async function handleAdminCreateUser(event) {
@@ -759,23 +780,54 @@ async function handleAdminCreateUser(event) {
 
     const fullname = document.getElementById('admin-create-fullname')?.value?.trim();
     const username = document.getElementById('admin-create-username')?.value?.trim();
-    const role = document.getElementById('admin-create-role')?.value || 'CUSTOMER';
+    const role = document.getElementById('admin-create-role')?.value || 'STAFF';
     const phone = document.getElementById('admin-create-phone')?.value?.trim();
     const email = document.getElementById('admin-create-email')?.value?.trim();
     const password = document.getElementById('admin-create-password')?.value || '';
+    const confirmPassword = document.getElementById('admin-create-confirm-password')?.value || '';
     const submitBtn = document.getElementById('admin-create-submit-btn');
 
     if (!fullname || !username || !password) {
-        showToast('Vui lòng nhập Họ tên, Tên đăng nhập và Mật khẩu!', 'error');
+        showToast('Vui lòng nhập đầy đủ Họ tên, Tên đăng nhập và Mật khẩu!', 'error');
         return;
     }
 
     if (password.length < 6) {
-        showToast('Mật khẩu phải có ít nhất 6 ký tự!', 'error');
+        showToast('Mật khẩu phải chứa ít nhất 6 ký tự!', 'error');
         return;
     }
 
-    if (submitBtn) submitBtn.disabled = true;
+    if (confirmPassword && password !== confirmPassword) {
+        showToast('Mật khẩu xác nhận không trùng khớp!', 'error');
+        document.getElementById('admin-create-confirm-password')?.focus();
+        return;
+    }
+
+    const roleNameMap = {
+        'STAFF': '✂️ Kỹ Thuật Viên / Groomer (Staff)',
+        'RECEPTIONIST': '🎧 Lễ Tân (Nhân viên tiếp đón)',
+        'ADMIN': '👑 Quản Trị Viên (Admin)',
+        'CUSTOMER': '🐾 Khách Hàng (Customer)'
+    };
+    const roleText = roleNameMap[role] || role;
+
+    // Hộp thoại xác nhận trước khi cấp tài khoản
+    const confirmed = confirm(
+        `XÁC NHẬN CẤP TÀI KHOẢN MỚI:\n\n` +
+        `• Họ và tên: ${fullname}\n` +
+        `• Tên đăng nhập: @${username}\n` +
+        `• Vai trò cấp: ${roleText}\n` +
+        `• Số điện thoại: ${phone || 'Chưa có'}\n` +
+        `• Email: ${email || 'Chưa có'}\n\n` +
+        `Bạn có chắc chắn muốn xác nhận cấp tài khoản cho nhân viên này?`
+    );
+
+    if (!confirmed) return;
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang khởi tạo...';
+    }
 
     try {
         const payload = {
@@ -797,6 +849,9 @@ async function handleAdminCreateUser(event) {
         document.getElementById('admin-create-phone').value = '';
         document.getElementById('admin-create-email').value = '';
         document.getElementById('admin-create-password').value = '';
+        if (document.getElementById('admin-create-confirm-password')) {
+            document.getElementById('admin-create-confirm-password').value = '';
+        }
 
         // Tải lại bảng
         loadAllUsersForAdmin();
@@ -804,7 +859,10 @@ async function handleAdminCreateUser(event) {
     } catch (e) {
         showToast('Lỗi cấp tài khoản: ' + e.message, 'error');
     } finally {
-        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-user-check"></i> Xác Nhận Cấp Tài Khoản';
+        }
     }
 }
 

@@ -116,4 +116,4 @@ if __name__ == "__main__":
     print(f" - Tài liệu Swagger API: http://localhost:{DEFAULT_PORT}/docs")
     print("=" * 70)
 
-    uvicorn.run("main:app", host="127.0.0.1", port=DEFAULT_PORT, reload=False)
+    uvicorn.run("main:app", host="127.0.0.1", port=DEFAULT_PORT, reload=True)
