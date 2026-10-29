@@ -188,6 +188,7 @@ async function sendChatMessage(customMsg = null) {
                 html += `<button type="button" class="btn btn-secondary btn-sm" style="font-size: 0.73rem; padding: 4px 10px; border-radius: 9999px; background: #ffffff; border: 1px solid #cbd5e1; font-weight: 600; cursor: pointer;" onclick="sendChatMessage('${safeAction}')">${action}</button>`;
             });
             html += `</div>`;
+        }
         html += `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.68rem; color: #64748b; border-top: 1px dashed #e2e8f0; padding-top: 5px; flex-wrap: wrap; gap: 4px;">
                 <span>${response.veterinary_disclaimer}</span>
@@ -269,15 +270,28 @@ function autoFillReminderForm() {
 }
 
 async function generateAIReminder(remType = 'appointment') {
-    const petName = document.getElementById('ai-rem-pet')?.value || 'Bé cún';
-    const ownerName = document.getElementById('ai-rem-owner')?.value || 'Khách hàng';
-    const serviceName = document.getElementById('ai-rem-service')?.value || 'Dịch vụ Spa';
-    const timeVal = document.getElementById('ai-rem-time')?.value || '09:00 ngày mai';
-    
+    let petName = document.getElementById('ai-rem-pet')?.value?.trim();
+    let ownerName = document.getElementById('ai-rem-owner')?.value?.trim();
+    let serviceName = document.getElementById('ai-rem-service')?.value?.trim();
+    let timeVal = document.getElementById('ai-rem-time')?.value?.trim();
+
+    // Tự động điền mẫu demo nếu để trống
+    if (!petName) { petName = 'Miu Miu'; const el = document.getElementById('ai-rem-pet'); if (el) el.value = petName; }
+    if (!ownerName) { ownerName = 'Nguyễn Thị Thảo'; const el = document.getElementById('ai-rem-owner'); if (el) el.value = ownerName; }
+    if (!serviceName) { serviceName = 'Tắm Spa thảo dược & Tỉa lông'; const el = document.getElementById('ai-rem-service'); if (el) el.value = serviceName; }
+    if (!timeVal) { timeVal = '09:00 ngày mai'; const el = document.getElementById('ai-rem-time'); if (el) el.value = timeVal; }
+
     const channelRadios = document.getElementsByName('rem-channel');
     let channel = 'zalo';
     for (const r of channelRadios) {
         if (r.checked) channel = r.value;
+    }
+
+    const btn = document.querySelector('button[onclick*="generateAIReminder"]');
+    const originalText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> AI đang sinh nội dung tin nhắn...';
     }
 
     try {
@@ -296,11 +310,17 @@ async function generateAIReminder(remType = 'appointment') {
         if (resultBox && resultText) {
             resultBox.style.display = 'block';
             resultText.textContent = data.message;
+            resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         showToast('AI đã tạo tin nhắn nhắc hẹn thành công!', 'success');
     } catch (e) {
         showToast('Lỗi tạo tin nhắn AI: ' + e.message, 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     }
 }
 
@@ -314,10 +334,20 @@ function copyReminderText() {
 
 async function generateAICareSummary() {
     const petSelect = document.getElementById('ai-summary-pet-select');
-    const petId = petSelect?.value;
+    let petId = petSelect?.value;
+    if (!petId && petSelect && petSelect.options.length > 0) {
+        petId = petSelect.options[0].value;
+        petSelect.value = petId;
+    }
     if (!petId) {
-        showToast('Vui lòng chọn bé thú cưng!', 'error');
-        return;
+        petId = 1;
+    }
+
+    const btn = document.querySelector('button[onclick*="generateAICareSummary"]');
+    const originalText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> AI đang phân tích toàn bộ hồ sơ...';
     }
 
     try {
@@ -343,9 +373,15 @@ async function generateAICareSummary() {
             warnBox.style.display = 'none';
         }
 
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         showToast(`Đã tổng hợp hồ sơ sức khỏe bé ${summary.pet_name}!`, 'success');
     } catch (e) {
         showToast('Lỗi tóm tắt hồ sơ: ' + e.message, 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     }
 }
 

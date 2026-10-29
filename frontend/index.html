@@ -59,10 +59,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css?v=2.1">
 
     <!-- Vector SVG Icon Engine -->
-    <script src="/static/js/icon_helper.js"></script>
+    <script src="/static/js/icon_helper.js?v=2.0"></script>
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased font-sans">
@@ -1142,9 +1142,10 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
                                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
-                                <input type="text" id="customer-lookup-phone"
+                                <input type="tel" id="customer-lookup-phone" maxlength="10"
                                     class="w-full bg-transparent text-slate-900 placeholder:text-slate-400 font-bold text-base focus:outline-none"
                                     placeholder="Nhập SĐT của bạn (Vd: 0912345678)..."
+                                    oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);"
                                     onkeypress="if(event.key==='Enter') lookupCustomerByPhone()">
                             </div>
                             <button onclick="lookupCustomerByPhone()"
@@ -1573,8 +1574,8 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Số điện thoại (*):</label>
-                                <input type="text" id="book-phone" class="form-control" placeholder="0988xxxxxx"
-                                    required>
+                                <input type="tel" id="book-phone" class="form-control" placeholder="0988xxxxxx"
+                                    maxlength="10" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -2267,8 +2268,12 @@
 
     <!-- Floating Support Chatbot Button & Window -->
     <div class="ai-fab-container" id="ai-fab-container"
-        style="position: fixed; bottom: 24px; right: 24px; z-index: 99990;">
-        <button type="button" class="floating-support-btn" onclick="toggleAIChat()" title="Hỗ trợ & Tư vấn trực tuyến">
+        style="position: fixed; bottom: 24px; right: 24px; z-index: 99990; display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+        <div class="ai-fab-pill-hint" onclick="toggleAIChat()" title="Nhấn để trò chuyện cùng Bác sĩ Thú Y AI" style="pointer-events: auto !important; cursor: pointer;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
+            <span>💬 Bác sĩ Thú Y AI 24/7</span>
+        </div>
+        <button type="button" class="floating-support-btn" onclick="toggleAIChat()" title="Hỗ trợ & Tư vấn trực tuyến" style="pointer-events: auto !important; cursor: pointer;">
             <i class="fa-solid fa-headset"></i>
         </button>
     </div>
@@ -2712,8 +2717,8 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Số điện thoại (*):</label>
-                        <input type="text" id="modal-owner-phone" class="form-control" placeholder="Vd: 0912345678"
-                            required>
+                        <input type="tel" id="modal-owner-phone" class="form-control" placeholder="Vd: 0912345678"
+                            maxlength="10" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -3205,7 +3210,8 @@
                                     </svg>
                                     Số điện thoại:
                                 </label>
-                                <input type="tel" id="reg-phone" class="form-control" placeholder="09xxxxxxxx">
+                                <input type="tel" id="reg-phone" class="form-control" placeholder="09xxxxxxxx"
+                                    maxlength="10" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);">
                             </div>
                         </div>
 
@@ -3557,7 +3563,8 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label"><i class="fa-solid fa-phone" style="color: #818cf8;"></i> Số điện thoại:</label>
-                                <input type="tel" id="admin-create-phone" class="form-control" placeholder="09xxxxxxxx">
+                                <input type="tel" id="admin-create-phone" class="form-control" placeholder="09xxxxxxxx"
+                                    maxlength="10" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);">
                             </div>
                         </div>
 
@@ -4030,8 +4037,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Số điện thoại liên hệ (*):</label>
-                            <input type="text" id="modal-custbook-phone" class="form-control" placeholder="0988xxxxxx"
-                                required>
+                            <input type="tel" id="modal-custbook-phone" class="form-control" placeholder="0988xxxxxx"
+                                maxlength="10" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);" required>
                         </div>
                     </div>
                     <div class="form-row" style="margin-top: 0.6rem;">
@@ -4384,18 +4391,18 @@
     <div id="toast-container"></div>
 
     <!-- Scripts -->
-    <script src="/static/js/icon_helper.js"></script>
-    <script src="/static/js/app.js"></script>
-    <script src="/static/js/auth.js"></script>
-    <script src="/static/js/dashboard.js"></script>
-    <script src="/static/js/appointments.js"></script>
-    <script src="/static/js/pets.js"></script>
-    <script src="/static/js/care.js"></script>
-    <script src="/static/js/invoices.js"></script>
-    <script src="/static/js/inventory.js"></script>
-    <script src="/static/js/camera_helper.js"></script>
-    <script src="/static/js/ai_assistant.js"></script>
-    <script src="/static/js/customer_portal.js"></script>
+    <script src="/static/js/icon_helper.js?v=2.0"></script>
+    <script src="/static/js/app.js?v=2.0"></script>
+    <script src="/static/js/auth.js?v=2.0"></script>
+    <script src="/static/js/dashboard.js?v=2.0"></script>
+    <script src="/static/js/appointments.js?v=2.0"></script>
+    <script src="/static/js/pets.js?v=2.0"></script>
+    <script src="/static/js/care.js?v=2.0"></script>
+    <script src="/static/js/invoices.js?v=2.0"></script>
+    <script src="/static/js/inventory.js?v=2.0"></script>
+    <script src="/static/js/camera_helper.js?v=2.0"></script>
+    <script src="/static/js/ai_assistant.js?v=2.2"></script>
+    <script src="/static/js/customer_portal.js?v=2.0"></script>
 </body>
 
 </html>

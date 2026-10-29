@@ -39,7 +39,7 @@ def check_pet_symptoms(data: AISymptomCheckRequest):
 @router.post("/generate-reminder", response_model=AIReminderResponse)
 def generate_reminder_message(
     data: AIReminderRequest,
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user_optional)
 ):
     """
     AI Feature 1: Sinh tin nhắn nhắc lịch chăm sóc hoặc tiêm phòng đa kênh (SMS, Zalo, Email)
@@ -58,7 +58,7 @@ def generate_reminder_message(
 def summarize_pet_care_history(
     data: AICareSummaryRequest,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user_optional)
 ):
     """
     AI Feature 2: AI Tóm tắt hồ sơ chăm sóc của thú cưng, tổng hợp xu hướng cân nặng & sức khỏe

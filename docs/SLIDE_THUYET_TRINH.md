@@ -19,11 +19,14 @@
 - Giải pháp: Xây dựng hệ thống PetCare AI quản lý toàn diện và ứng dụng AI thông minh hỗ trợ vận hành.
 
 ### SLIDE 3: MỤC TIÊU & CÁC CHỨC NĂNG CHÍNH
-- **Nghiệp vụ:** Phân quyền 3 vai trò (Admin, Lễ tân, Kỹ thuật viên); Quản lý thú cưng & chủ nuôi; Đặt lịch có chống trùng lịch; Sổ chăm sóc spa; Lịch tiêm nhắc; Hóa đơn & thanh toán.
-- **Tính năng AI:**
-  1. AI Soạn tin nhắn nhắc lịch (Tự động điền ngữ cảnh, tùy chọn phong cách).
-  2. AI Tóm tắt hồ sơ chăm sóc thú cưng (Phân tích thể trạng, phát hiện mũi tiêm quá hạn).
-  3. AI Trợ lý tư vấn chăm sóc có Disclaimer y tế và nhận diện cấp cứu khẩn.
+- **Nghiệp vụ cốt lõi:**
+  - Phân quyền RBAC 3 vai trò nội bộ (Admin, Lễ tân, Kỹ thuật viên Groomer).
+  - Quản lý thú cưng, chủ nuôi, hóa đơn, kho hàng và thuật toán chống trùng lịch.
+  - **Cổng Khách Hàng Nhanh (Quick Portal / Kiosk Mode):** Khách hàng hoặc quầy tự phục vụ tại cửa hàng chỉ cần nhập SĐT là tra cứu tức thì hạng thẻ VIP, điểm thưởng, số tiêm chủng điện tử và đặt lịch nhanh mà không cần đăng nhập tài khoản phức tạp.
+- **Tính năng AI tích hợp:**
+  1. AI Soạn tin nhắn nhắc lịch (Tự động điền ngữ cảnh, tùy biến phong cách SMS/Zalo/Email).
+  2. AI Tóm tắt hồ sơ chăm sóc thú cưng (Phân tích diễn biến cân nặng, cảnh báo lông da/dị ứng).
+  3. AI Trợ lý tư vấn chăm sóc với Veterinary Disclaimer và cơ chế nhận diện dấu hiệu cấp cứu đỏ (Emergency Red Flags).
 
 ### SLIDE 4: ỨNG DỤNG AI TRONG SDLC (QUY TRÌNH PHÁT TRIỂN)
 - **KT1:** AI hỗ trợ phân tích ca sử dụng (Use Case) và thiết kế sơ đồ quan hệ thực thể (ERD).
@@ -38,9 +41,10 @@
 - Testing: Pytest tự động 10/10 test cases PASS.
 
 ### SLIDE 6: DEMO TÍNH NĂNG NỔI BẬT (LIVE DEMO)
-- 1. Chuyển đổi vai trò linh hoạt (Admin, Lễ tân, Groomer).
-- 2. Thử nghiệm đặt lịch và kiểm tra cơ chế chặn trùng lịch.
-- 3. Trải nghiệm AI Studio: Soạn tin nhắn Zalo/SMS, Tóm tắt hồ sơ bé Bim Bim, và Chatbot hỏi đáp test cảnh báo cấp cứu y tế thú y.
+- 1. **Cổng Khách Hàng Nhanh (Kiosk Mode):** Nhập SĐT tra cứu tức thì thẻ VIP, số điểm thưởng, lịch tiêm phòng sắp tới và đặt lịch dịch vụ nhanh.
+- 2. **Chuyển đổi phân quyền RBAC 1-click:** Trải nghiệm góc nhìn Admin, Lễ tân và Kỹ thuật viên Groomer.
+- 3. **Thuật toán kiểm soát lịch:** Thử nghiệm đặt lịch và kiểm tra cơ chế chặn xung đột thời gian (Slot Conflict Detection).
+- 4. **Trải nghiệm AI Studio:** Soạn tin nhắn Zalo/SMS cá nhân hóa, tóm tắt diễn biến sức khỏe thú cưng, và kiểm thử Chatbot nhận diện tình huống khẩn cấp y tế.
 
 ### SLIDE 7: KẾT LUẬN & HƯỚNG PHÁT TRIỂN
 - Hệ thống hoàn thành 100% mục tiêu học phần đề ra.

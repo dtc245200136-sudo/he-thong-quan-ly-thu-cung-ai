@@ -9,6 +9,11 @@ async function lookupCustomerByPhone(presetPhone = null, silent = false) {
         return;
     }
 
+    if (phone.length !== 10) {
+        if (!silent) showToast('Số điện thoại phải có đúng 10 chữ số (Vd: 0912345678)!', 'warning');
+        return;
+    }
+
     if (input) input.value = phone;
 
     const resultContainer = document.getElementById('customer-portal-results');
@@ -87,31 +92,39 @@ function renderCustomerPortalData(data) {
 
     container.innerHTML = `
         <!-- VIP Loyalty Membership Card -->
-        <div class="glass-panel" style="background: ${tierBg}; border: 1px solid ${tierBorder}; box-shadow: 0 16px 40px -10px ${tierGlow}; padding: 2rem; border-radius: var(--radius-lg); margin-bottom: 2rem; color: #ffffff; position: relative; overflow: hidden;">
+        <div class="vip-membership-card" style="background-color: #0f172a !important; background-image: ${tierBg} !important; border: 1px solid ${tierBorder} !important; box-shadow: 0 16px 40px -10px ${tierGlow}; padding: 2rem; border-radius: 20px; margin-bottom: 2rem; color: #ffffff !important; position: relative; overflow: hidden;">
             <div style="position: absolute; right: -25px; bottom: -25px; font-size: 10rem; opacity: 0.12; pointer-events: none; color: ${tierColor};">
                 <i class="fa-solid ${tierIcon}"></i>
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; position: relative; z-index: 1;">
                 <div>
-                    <div style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1.8px; opacity: 0.9; font-weight: 700; color: ${tierColor};">
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1.8px; opacity: 0.95; font-weight: 700; color: ${tierColor} !important;">
                         <i class="fa-solid fa-paw"></i> PetCare Pro VIP Membership
                     </div>
-                    <h2 style="font-size: 1.85rem; font-weight: 800; margin: 8px 0; display: flex; align-items: center; gap: 10px; letter-spacing: -0.5px;">
-                        ${owner.full_name}
-                        <span class="badge" style="background: rgba(0, 0, 0, 0.35); color: ${tierColor}; font-size: 0.8rem; border: 1px solid ${tierColor}; padding: 5px 12px; box-shadow: 0 0 12px ${tierGlow};">
+                    <h2 style="font-size: 1.85rem; font-weight: 800; margin: 8px 0; display: flex; align-items: center; gap: 10px; letter-spacing: -0.5px; color: #ffffff !important;">
+                        <span style="color: #ffffff !important; text-shadow: 0 2px 6px rgba(0,0,0,0.7);">${owner.full_name}</span>
+                        <span class="badge" style="background: rgba(0, 0, 0, 0.55); color: ${tierColor} !important; font-size: 0.8rem; border: 1px solid ${tierColor}; padding: 5px 12px; box-shadow: 0 0 12px ${tierGlow};">
                             <i class="fa-solid ${tierIcon}"></i> ${loyalty.tier_name}
                         </span>
                     </h2>
-                    <div style="font-size: 0.92rem; opacity: 0.9; display: flex; gap: 1.25rem; flex-wrap: wrap; margin-top: 6px;">
-                        <span><i class="fa-solid fa-phone" style="color: #38bdf8;"></i> ${owner.phone}</span>
-                        ${owner.email ? `<span><i class="fa-solid fa-envelope" style="color: #a78bfa;"></i> ${owner.email}</span>` : ''}
-                        ${owner.address ? `<span><i class="fa-solid fa-location-dot" style="color: #34d399;"></i> ${owner.address}</span>` : ''}
+                    <div style="font-size: 0.95rem; display: flex; gap: 1.25rem; flex-wrap: wrap; margin-top: 8px; color: #f8fafc !important;">
+                        <span style="color: #ffffff !important; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+                            <i class="fa-solid fa-phone" style="color: #38bdf8;"></i> <span style="color: #ffffff !important;">${owner.phone}</span>
+                        </span>
+                        ${owner.email ? `
+                        <span style="color: #f1f5f9 !important; display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-envelope" style="color: #c084fc;"></i> <span style="color: #f1f5f9 !important;">${owner.email}</span>
+                        </span>` : ''}
+                        ${owner.address ? `
+                        <span style="color: #f1f5f9 !important; display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-location-dot" style="color: #34d399;"></i> <span style="color: #f1f5f9 !important;">${owner.address}</span>
+                        </span>` : ''}
                     </div>
                 </div>
 
-                <div style="text-align: right; background: rgba(15, 23, 42, 0.65); padding: 1rem 1.6rem; border-radius: var(--radius-md); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1);">
-                    <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.8px; color: #94a3b8; font-weight: 600;">Điểm thưởng tích lũy</div>
+                <div style="text-align: right; background: rgba(15, 23, 42, 0.85); padding: 1.1rem 1.6rem; border-radius: 14px; backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 24px rgba(0,0,0,0.35);">
+                    <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.8px; color: #cbd5e1; font-weight: 600;">Điểm thưởng tích lũy</div>
                     <div style="font-size: 2.2rem; font-weight: 900; color: #fbbf24; line-height: 1.2; text-shadow: 0 2px 10px rgba(251, 191, 36, 0.4);">
                         ${loyalty.points.toLocaleString()} <span style="font-size: 1rem; font-weight: 600; color: #fde68a;">pts</span>
                     </div>

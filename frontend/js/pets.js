@@ -139,6 +139,12 @@ async function submitAddOwner() {
         return;
     }
 
+    const cleanPhone = phone.trim().replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+        showToast('Số điện thoại phải có đúng 10 chữ số (Vd: 0912345678)!', 'error');
+        return;
+    }
+
     try {
         const newOwner = await apiCall('/owners', 'POST', {
             full_name: name,
