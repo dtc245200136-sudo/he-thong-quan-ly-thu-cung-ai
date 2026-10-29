@@ -83,7 +83,7 @@ Mở cửa sổ dòng lệnh tại thư mục dự án và chạy:
 ```bash
 python run.py
 ```
-> Trình duyệt web sẽ tự động mở trang chủ tại địa chỉ: `http://127.0.0.1:8000`
+> Trình duyệt web sẽ tự động mở trang chủ tại địa chỉ: `http://127.0.0.1:3000`
 
 ### Cách 2: Khởi động thủ công qua Uvicorn
 ```bash
